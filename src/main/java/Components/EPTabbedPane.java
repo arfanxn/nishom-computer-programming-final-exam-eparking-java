@@ -4,7 +4,6 @@ package Components;
 * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 /**
  *
  * @author arfanxn
@@ -20,18 +19,16 @@ public class EPTabbedPane extends JTabbedPane {
         entryPanel.setBackground(Color.DARK_GRAY);
         entryPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
-//        JScrollPane entryScrollPane = new JScrollPane();
-//        entryScrollPane.add(entryPanel);
-//        entryScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//        entryScrollPane.setBackground(Color.BLUE);
-//        entryScrollPane.setLayout(new ScrollPaneLayout());
-//        entryScrollPane.setVisible(true);
+        JScrollPane entryScrollPane = new JScrollPane(entryPanel);
+        entryScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        entryScrollPane.setBackground(Color.BLUE);
+        entryScrollPane.setLayout(new ScrollPaneLayout());
 
         OutPanel outPanel = new OutPanel();
         outPanel.setBackground(Color.GRAY);
         outPanel.setLayout(new GridLayout(0, 1));
 
-        this.add("Entry", entryPanel);
+        this.add("Entry", entryScrollPane);
         this.add("Out", outPanel);
     }
 

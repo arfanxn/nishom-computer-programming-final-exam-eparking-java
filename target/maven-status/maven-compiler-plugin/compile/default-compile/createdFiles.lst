@@ -3,4 +3,5 @@ Main.class
 Components/EntryPanel.class
 Components/OutPanel.class
 Components/EPFrame.class
+Components/EPScrollPane.class
 Components/EPLabeledTextField.class

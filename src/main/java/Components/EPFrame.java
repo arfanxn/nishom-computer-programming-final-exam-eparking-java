@@ -1,5 +1,6 @@
 package Components;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.HeadlessException;
 import javax.swing.ImageIcon;
@@ -25,6 +26,6 @@ public class EPFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(new Color(255, 255, 255)); // white background
         this.setResizable(true);
-        this.setLayout(null);
+        this.setLayout(new BorderLayout());
     }
 }
