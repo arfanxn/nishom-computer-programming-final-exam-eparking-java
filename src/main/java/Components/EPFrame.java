@@ -21,7 +21,7 @@ public class EPFrame extends JFrame {
         ImageIcon imgIcon = new ImageIcon("src/assets/images/icon.png");
         this.setIconImage(imgIcon.getImage());
 
-        // Set the frame
+        // Configure the frame
         this.setTitle("E-Parking");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setBackground(new Color(255, 255, 255)); // white background
