@@ -8,28 +8,19 @@ package Components;
  *
  * @author arfanxn
  */
-import java.awt.Color;
-import java.awt.GridLayout;
+
 import javax.swing.*;
 
 public class EPTabbedPane extends JTabbedPane {
 
     public EPTabbedPane() {
-        EntryPanel entryPanel = new EntryPanel();
-        entryPanel.setBackground(Color.DARK_GRAY);
-        entryPanel.setLayout(new GridLayout(0, 1, 0, 0));
+        VehicleListPanel vehicleListPanel = new VehicleListPanel();
+        VehicleEntryPanel vehicleEntryPanel = new VehicleEntryPanel();
+        VehicleOutPanel vehicleOutPanel = new VehicleOutPanel();
 
-        JScrollPane entryScrollPane = new JScrollPane(entryPanel);
-        entryScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        entryScrollPane.setBackground(Color.BLUE);
-        entryScrollPane.setLayout(new ScrollPaneLayout());
-
-        OutPanel outPanel = new OutPanel();
-        outPanel.setBackground(Color.GRAY);
-        outPanel.setLayout(new GridLayout(0, 1));
-
-        this.add("Entry", entryScrollPane);
-        this.add("Out", outPanel);
+        this.add("List", vehicleListPanel);
+        this.add("Entry", vehicleEntryPanel);
+        this.add("Out", vehicleOutPanel);
     }
 
 }
