@@ -10,17 +10,21 @@ import Components.EPFrame;
  * @author arfanxn
  */
 public class Main {
-    
+
     private static final int FRAME_WIDTH = 500, FRAME_HEIGHT = 500;
 
     public static void main(String[] args) {
+        // instantiate frame
         EPFrame frame = new EPFrame();
-
+        
+        // instantiate tabbed pane
         EPTabbedPane tabbedPane = new EPTabbedPane();
-        tabbedPane.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+        
+        // add component(s) to frame
         frame.getContentPane().add(tabbedPane);
-
-        frame.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+        
+        // configure frame
+        frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.setVisible(true);
     }
 }
