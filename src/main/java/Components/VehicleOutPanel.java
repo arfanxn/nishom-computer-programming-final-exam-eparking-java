@@ -5,6 +5,7 @@
 package Components;
 
 import java.awt.BorderLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 /**
@@ -15,9 +16,9 @@ public class VehicleOutPanel extends JPanel {
 
     public VehicleOutPanel() {
         EPLabeledTextFieldPanel vehicleIdLabeledTextField = new EPLabeledTextFieldPanel();
-        vehicleIdLabeledTextField.label.setText("Parking ID");
+        vehicleIdLabeledTextField.getLabel().setText("Parking ID");
 
-        EPButton submitBtn = new EPButton();
+        JButton submitBtn = new JButton();
         submitBtn.setText("Submit");
 
         this.setLayout(new BorderLayout());

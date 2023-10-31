@@ -4,9 +4,9 @@
  */
 package Components;
 
-import Interfaces.EPConfirmButtonCallback;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import Interfaces.OptionPaneYesNoCallback;
 
 /**
  *
@@ -15,12 +15,12 @@ import javax.swing.JPanel;
 public class VehicleEntryPanel extends JPanel {
 
     public VehicleEntryPanel() {
-        EPLabeledTextFieldPanel vehicleIdLabeledTextField = new EPLabeledTextFieldPanel();
-        vehicleIdLabeledTextField.label.setText("Vehicle Number Plate");
-
-        EPConfirmButton confirmButton = new EPConfirmButton();
-        confirmButton.setText("Submit");
-        confirmButton.setCallback(new EPConfirmButtonCallback() {
+        this.setLayout(new BorderLayout());
+        
+        EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
+        vehicleIdLabeledTFBtnPanel.getLabel().setText("Vehicle Number Plate");
+        vehicleIdLabeledTFBtnPanel.getButton().setText("Submit");
+        vehicleIdLabeledTFBtnPanel.getButton().setOptionPaneYesNoCallback(new OptionPaneYesNoCallback() {
             @Override
             public void onOptionYes() {
                 System.out.println("CONFIRMED");
@@ -31,10 +31,8 @@ public class VehicleEntryPanel extends JPanel {
                 // do nothing
             }
         });
-
-        this.setLayout(new BorderLayout());
-        this.add(vehicleIdLabeledTextField, BorderLayout.PAGE_START);
-        this.add(confirmButton, BorderLayout.PAGE_END);
+        vehicleIdLabeledTFBtnPanel.setVisible(true);
+        this.add(vehicleIdLabeledTFBtnPanel, BorderLayout.NORTH);
     }
 
 }

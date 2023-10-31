@@ -18,8 +18,10 @@ public class VehicleListPanel extends JPanel {
     public VehicleListPanel() {
         this.setLayout(new BorderLayout());
         
-        EPSearchBarPanel searchBarPanel = new EPSearchBarPanel();
-        this.add(searchBarPanel, BorderLayout.PAGE_START);
+        EPLabeledTextFieldButtonPanel searchBarLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
+        searchBarLabeledTFBtnPanel.getButton().setText("Search");
+        searchBarLabeledTFBtnPanel.setVisible(true);
+        this.add(searchBarLabeledTFBtnPanel, BorderLayout.PAGE_START);
 
         String data[][] = {
             {"xxxx-xxxx-xxxx-xxxx", "B 2928 TU", "01-01-2020 17:17:17", "01-01-2020 17:17:17", "01-01-2020 17:17:17"},
