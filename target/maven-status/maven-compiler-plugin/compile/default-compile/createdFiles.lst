@@ -1,12 +1,9 @@
 Components/EPTabbedPane.class
 Components/VehicleEntryPanel.class
 Main.class
-Interfaces/EPConfirmButtonCallback.class
 Components/EPButton.class
 Components/VehicleListPanel.class
 Components/VehicleEntryPanel$1.class
-Components/EPSearchBarPanel.class
 Components/VehicleOutPanel.class
 Components/EPLabeledTextFieldPanel.class
 Components/EPFrame.class
-Components/EPConfirmButton.class
