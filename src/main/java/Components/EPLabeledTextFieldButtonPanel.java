@@ -86,7 +86,7 @@ public class EPLabeledTextFieldButtonPanel extends JPanel {
         gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.VERTICAL;
         this.add(
-                new EPBorderLayoutPanel(this.button, EPBorderLayoutPanel.NORTH),
+                new EPBorderLayoutPanel(this.button, EPBorderLayoutPanel.SOUTH),
                 gbc);
         this.button.setVisible(true);
     }
