@@ -14,12 +14,12 @@ import java.util.ArrayList;
 /**
  *
  * @author arfanxn
- * @param <T>
+ * @param <M>
  *
  */
-public class Repository<T extends Interfaces.Model> {
+public class Repository<M extends Interfaces.Model> implements Interfaces.Repository {
 
-    private T model;
+    private M model;
     private int limit, offset;
     private String keyword;
     private Connection connection;
@@ -38,11 +38,12 @@ public class Repository<T extends Interfaces.Model> {
         
     }
 
-    public <T extends Interfaces.Model> T getModel() {
-        return (T) this.model;
+    @Override
+    public M getModel() {
+        return (M) this.model;
     }
 
-    public void setModel(T model) {
+    public void setModel(M model) {
         this.model = model;
     }
 

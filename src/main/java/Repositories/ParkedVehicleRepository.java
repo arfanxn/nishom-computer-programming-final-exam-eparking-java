@@ -11,7 +11,7 @@ import Models.ParkedVehicle;
  *
  * @author arfanxn
  */
-public class ParkedVehicleRepository extends Repository {    
+public class ParkedVehicleRepository extends Repository {
 
     public ParkedVehicleRepository() {
         this.setModel(new ParkedVehicle());
