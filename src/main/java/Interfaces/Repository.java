@@ -7,8 +7,8 @@ package Interfaces;
 /**
  *
  * @author arfanxn
- * @param <T>
+ * @param <M>
  */
-public interface Repository<T extends Model> {
-    public T getModel();
+public interface Repository<M extends Model> {
+    public M getModel();
 }
