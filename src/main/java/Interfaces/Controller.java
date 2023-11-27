@@ -10,16 +10,16 @@ package Interfaces;
  */
 public interface Controller {
 
-    public <T extends Model> T getModel();
+    public <M extends Model> M getModel();
 
-    public <T extends Model> void setModel(T model);
+    public <M extends Model> void setModel(M model);
 
-    public <T extends Repository> T getRepository();
+    public <R extends Repository> R getRepository();
 
-    public <T extends Repository> void setRepository(T repository);
+    public <R extends Repository> void setRepository(R repository);
 
-    public <T> T getView();
+    public <V> V getView();
 
-    public <T> void setView(T view);
+    public <V extends View> void setView(V view);
 
 }
