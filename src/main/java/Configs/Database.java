@@ -23,10 +23,8 @@ public class Database {
     private String connection, host, port, database, driver;
     private String username, password;
 
+    // Singleton private constructor 
     private Database() {
-        this.setJdbcUrlString("jdbc:mysql://localhost:3306/e-parking?serverTimezone=UTC");
-        this.setUsername("root");
-        this.setPassword("");
     }
 
     private void setJdbcUrlString(String urlString) {
@@ -91,7 +89,7 @@ public class Database {
         return username;
     }
 
-    private void setUsername(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
@@ -99,7 +97,7 @@ public class Database {
         return password;
     }
 
-    private void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 }
