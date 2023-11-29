@@ -4,7 +4,8 @@
  */
 package Repositories;
 
-import Models.ParkedVehicle;
+import Configs.Database;
+import Interfaces.Model;
 
 
 /**
@@ -13,8 +14,8 @@ import Models.ParkedVehicle;
  */
 public class ParkedVehicleRepository extends Repository {
 
-    public ParkedVehicleRepository() {
-        this.setModel(new ParkedVehicle());
+    public ParkedVehicleRepository(Database databaseConfig, Model model) {
+        super(databaseConfig, model);
     }
 
 }

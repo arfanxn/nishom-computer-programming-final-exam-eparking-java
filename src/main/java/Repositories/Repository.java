@@ -4,6 +4,7 @@
  */
 package Repositories;
 
+import Configs.Database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,23 +20,14 @@ import java.util.ArrayList;
  */
 public class Repository<M extends Interfaces.Model> implements Interfaces.Repository {
 
+    private Configs.Database databaseConfig;
     private M model;
     private int limit, offset;
     private String keyword;
-    private Connection connection;
-
-    public Repository() {
-        Configs.Database database = Configs.Database.getInstance();
-        try {
-            this.connection = DriverManager.getConnection(
-                    database.getJdbcUrlString(),
-                    database.getUsername(),
-                    database.getPassword()
-            );
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        
+    
+    public Repository(Configs.Database databaseConfig, M model) {
+        this.databaseConfig = databaseConfig;
+        this.model = model;
     }
 
     @Override
@@ -71,30 +63,42 @@ public class Repository<M extends Interfaces.Model> implements Interfaces.Reposi
         this.keyword = keyword;
     }
 
-    public Connection getConnection() {
-        return connection;
+    public Database getDatabase() {
+        // by default when databaseConfig config isn't provided the repository will use the default one instead
+        this.databaseConfig = this.databaseConfig == null ? Configs.Database.getInstance() : this.databaseConfig;
+        return this.databaseConfig;
     }
 
-    public void setConnection(Connection connection) {
-        this.connection = connection;
+    public void setDatabase(Database database) {
+        this.databaseConfig = database;
     }
 
-    public <T extends Interfaces.Model> ArrayList<T> pagination() throws SQLException {
-        String tableName = this.getModel().getTableName();
-        StringBuilder queryStringBuilder = new StringBuilder();
-        queryStringBuilder.append("SELECT * FROM");
-        queryStringBuilder.append(" ").append(tableName);
-        if (this.limit != 0) {
-            queryStringBuilder.append(" LIMIT ").append(Integer.toString(this.limit));
-        }
-        if (this.offset != 0) {
-            queryStringBuilder.append(" OFFSET ").append(Integer.toString(this.offset));
-        }
+    public <T extends Interfaces.Model> ArrayList<T> get() throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = DriverManager.getConnection(databaseConfig.getJdbcUrlString());
 
-        PreparedStatement preparedStatement = this.connection.prepareStatement(queryStringBuilder.toString());
-        ResultSet resultSet = preparedStatement.executeQuery();
+            StringBuilder queryStringBuilder = new StringBuilder();
+            queryStringBuilder.append("SELECT * FROM");
+            queryStringBuilder.append(" ").append(this.getModel().getTableName());
+            if (this.limit != 0) {
+                queryStringBuilder.append(" LIMIT ").append(Integer.toString(this.limit));
+            }
+            if (this.offset != 0) {
+                queryStringBuilder.append(" OFFSET ").append(Integer.toString(this.offset));
+            }
 
-        return this.model.fromResultSet(resultSet);
+            preparedStatement = connection.prepareStatement(queryStringBuilder.toString());
+            resultSet = preparedStatement.executeQuery();
+
+            return this.model.fromResultSet(resultSet);
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            Utilities.Database.close(connection, preparedStatement, resultSet);
+        }
     }
 
 }
