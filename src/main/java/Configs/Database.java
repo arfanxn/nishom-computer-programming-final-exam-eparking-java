@@ -20,6 +20,7 @@ public class Database {
     }
 
     private String jdbcUrlString;
+    private String connection, host, port, database, driver;
     private String username, password;
 
     private Database() {
@@ -33,7 +34,57 @@ public class Database {
     }
 
     public String getJdbcUrlString() {
+        // output example: jdbc:mysql://localhost:3306/e-parking?user=root&password=&serverTimezone=UTC
+        this.jdbcUrlString = String.format("%s:%s://%s:%s/%s?user=%s&password=%s&serverTimezone=UTC",
+                this.getDriver(),
+                this.getConnection(),
+                this.getHost(),
+                this.getPort(),
+                this.getDatabase(),
+                this.getUsername(),
+                this.getPassword()
+        );
         return this.jdbcUrlString;
+    }
+
+    public String getConnection() {
+        return connection;
+    }
+
+    public void setConnection(String connection) {
+        this.connection = connection;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
+    }
+
+    public String getDriver() {
+        return driver;
+    }
+
+    public void setDriver(String driver) {
+        this.driver = driver;
     }
 
     public String getUsername() {
