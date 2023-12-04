@@ -11,7 +11,7 @@ import Models.ParkedVehicle;
  *
  * @author arfanxn
  */
-public class RepositoryContainer {
+public class Repository {
     
     public static ParkedVehicleRepository InitializeParkedVehicleRepository() {
         ParkedVehicle model = new ParkedVehicle();
