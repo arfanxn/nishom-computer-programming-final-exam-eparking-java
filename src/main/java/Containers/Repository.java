@@ -13,7 +13,7 @@ import Models.ParkedVehicle;
  */
 public class Repository {
     
-    public static ParkedVehicleRepository InitializeParkedVehicleRepository() {
+    public static ParkedVehicleRepository initializeParkedVehicleRepository() {
         ParkedVehicle model = new ParkedVehicle();
         var databaseConfig = Configs.Database.getInstance();
         ParkedVehicleRepository repository = new ParkedVehicleRepository(databaseConfig, model);
