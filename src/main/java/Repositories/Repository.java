@@ -10,21 +10,42 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author arfanxn
  * @param <M>
+ * @param <MC>
  *
  */
-public class Repository<M extends Interfaces.Model> implements Interfaces.Repository {
+public class Repository<M extends Interfaces.Model, MC extends Interfaces.ModelCollection> implements Interfaces.Repository {
 
     private Configs.Database databaseConfig;
     private M model;
+    private MC modelCollection;
+    private ResultSet resultSet;
     private int limit, offset;
+    private Map<String, String> orderBys;
+
+    public Map<String, String> getOrderBys() {
+        return orderBys;
+    }
+
+    public Repository setOrderBys(HashMap<String, String> orderBys) {
+        this.orderBys = orderBys;
+        return this;
+    }
+
+    public Repository addOrderBy(String column, String orderBy) {
+        this.orderBys = this.orderBys == null ? new HashMap<>() : this.orderBys;
+        this.orderBys.put(column, orderBy);
+        return this;
+    }
+
     private String keyword;
-    
+
     public Repository(Configs.Database databaseConfig, M model) {
         this.databaseConfig = databaseConfig;
         this.model = model;
@@ -35,32 +56,46 @@ public class Repository<M extends Interfaces.Model> implements Interfaces.Reposi
         return (M) this.model;
     }
 
-    public void setModel(M model) {
+    public Repository setModel(M model) {
         this.model = model;
+        return this;
+    }
+    
+    @Override
+    public MC getModelCollection() {
+        return (MC) this.modelCollection;
+    }
+
+    public Repository setModelCollection(MC modelCollection) {
+        this.modelCollection = modelCollection;
+        return this;
     }
 
     public int getLimit() {
         return limit;
     }
 
-    public void setLimit(int limit) {
+    public Repository setLimit(int limit) {
         this.limit = limit;
+        return this;
     }
 
     public int getOffset() {
         return offset;
     }
 
-    public void setOffset(int offset) {
+    public Repository setOffset(int offset) {
         this.offset = offset;
+        return this;
     }
 
     public String getKeyword() {
         return keyword;
     }
 
-    public void setKeyword(String keyword) {
+    public Repository setKeyword(String keyword) {
         this.keyword = keyword;
+        return this;
     }
 
     public Database getDatabase() {
@@ -69,11 +104,12 @@ public class Repository<M extends Interfaces.Model> implements Interfaces.Reposi
         return this.databaseConfig;
     }
 
-    public void setDatabase(Database database) {
+    public Repository setDatabase(Database database) {
         this.databaseConfig = database;
+        return this;
     }
 
-    public <T extends Interfaces.Model> ArrayList<T> get() throws SQLException {
+    public Repository get() throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -89,11 +125,24 @@ public class Repository<M extends Interfaces.Model> implements Interfaces.Reposi
             if (this.offset != 0) {
                 queryStringBuilder.append(" OFFSET ").append(Integer.toString(this.offset));
             }
+            if (this.orderBys.isEmpty() == false) {
+                queryStringBuilder.append(" ORDER BY ");
+                int index = 0;
+                for (Map.Entry<String, String> set : this.orderBys.entrySet()) {
+                    String column = set.getKey();
+                    String orderBy = set.getValue();
+                    if (index > 0) {
+                        queryStringBuilder.append(", ");
+                    }
+                    queryStringBuilder.append(column).append(" ").append(orderBy);
+                    index++;
+                }
+            }
 
             preparedStatement = connection.prepareStatement(queryStringBuilder.toString());
-            resultSet = preparedStatement.executeQuery();
-
-            return this.model.fromResultSet(resultSet);
+            this.resultSet = preparedStatement.executeQuery();
+            
+            return this;
         } catch (SQLException e) {
             throw e;
         } finally {
