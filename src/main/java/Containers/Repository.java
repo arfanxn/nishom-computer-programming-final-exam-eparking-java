@@ -6,6 +6,7 @@ package Containers;
 
 import Repositories.ParkedVehicleRepository;
 import Models.ParkedVehicle;
+import Models.ParkedVehicleCollection;
 
 /**
  *
@@ -14,9 +15,10 @@ import Models.ParkedVehicle;
 public class Repository {
     
     public static ParkedVehicleRepository initializeParkedVehicleRepository() {
-        ParkedVehicle model = new ParkedVehicle();
+        var model = new ParkedVehicle();
+        var modelCollection = new ParkedVehicleCollection();
         var databaseConfig = Configs.Database.getInstance();
-        ParkedVehicleRepository repository = new ParkedVehicleRepository(databaseConfig, model);
+        ParkedVehicleRepository repository = new ParkedVehicleRepository(databaseConfig, model, modelCollection);
         return repository;
     }
     

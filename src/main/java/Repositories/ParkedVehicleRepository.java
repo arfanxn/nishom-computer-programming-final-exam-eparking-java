@@ -6,6 +6,7 @@ package Repositories;
 
 import Configs.Database;
 import Interfaces.Model;
+import Interfaces.ModelCollection;
 
 
 /**
@@ -14,8 +15,8 @@ import Interfaces.Model;
  */
 public class ParkedVehicleRepository extends Repository {
 
-    public ParkedVehicleRepository(Database databaseConfig, Model model) {
-        super(databaseConfig, model);
+    public ParkedVehicleRepository(Database databaseConfig, Model model, ModelCollection modelCollection) {
+        super(databaseConfig, model, modelCollection);
     }
 
 }

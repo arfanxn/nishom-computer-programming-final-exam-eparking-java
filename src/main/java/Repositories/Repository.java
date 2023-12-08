@@ -46,9 +46,10 @@ public class Repository<M extends Interfaces.Model, MC extends Interfaces.ModelC
 
     private String keyword;
 
-    public Repository(Configs.Database databaseConfig, M model) {
+    public Repository(Configs.Database databaseConfig, M model, MC modelCollection) {
         this.databaseConfig = databaseConfig;
         this.model = model;
+        this.modelCollection = modelCollection;
     }
 
     @Override
