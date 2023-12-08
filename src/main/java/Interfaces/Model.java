@@ -4,18 +4,12 @@
  */
 package Interfaces;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 /**
  *
  * @author arfanxn
- * @param <T>
  */
-public interface Model<T extends Model> {
+public interface Model {
 
     public String getTableName();
 
-    public ArrayList<T> fromResultSet(ResultSet resultSet) throws SQLException;
 }
