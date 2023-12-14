@@ -37,7 +37,7 @@ public class ParkedVehicleRepository extends Repository {
         return collection;
     }
     
-    public ParkedVehicleRepository all() throws SQLException {
+    public ParkedVehicleRepository get() throws SQLException {
         this.buildSelectQueryString(this.model.getTableName());
 
         // Assign the values
