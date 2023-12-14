@@ -6,7 +6,6 @@ package Components;
 
 import javax.swing.JTable;
 import java.util.List;
-import java.util.ArrayList;
 import Models.ParkedVehicle;
 import javax.swing.table.DefaultTableModel;
 
