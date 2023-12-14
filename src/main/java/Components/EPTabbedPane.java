@@ -14,11 +14,11 @@ import javax.swing.*;
 public class EPTabbedPane extends JTabbedPane {
 
     public EPTabbedPane() {
-        VehicleListPanel vehicleListPanel = new VehicleListPanel();
+        ParkedVehiclePanel parkedVehiclePanel = new ParkedVehiclePanel();
         VehicleEntryPanel vehicleEntryPanel = new VehicleEntryPanel();
         VehicleOutPanel vehicleOutPanel = new VehicleOutPanel();
 
-        this.add("List", vehicleListPanel);
+        this.add("List", parkedVehiclePanel);
         this.add("Entry", vehicleEntryPanel);
         this.add("Out", vehicleOutPanel);
     }
