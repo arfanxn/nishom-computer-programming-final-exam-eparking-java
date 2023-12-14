@@ -15,10 +15,14 @@ import Interfaces.OptionPaneYesNoCallback;
 public class VehicleEntryPanel extends JPanel {
 
     public VehicleEntryPanel() {
+        this.setupViews();
+    }
+    
+    private void setupViews() {
         this.setLayout(new BorderLayout());
-        
+
         EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
-        vehicleIdLabeledTFBtnPanel.getLabel().setText("Vehicle Number Plate");
+        vehicleIdLabeledTFBtnPanel.getLabel().setText("Plate Number");
         vehicleIdLabeledTFBtnPanel.getButton().setText("Submit");
         vehicleIdLabeledTFBtnPanel.getButton().setOptionPaneYesNoCallback(new OptionPaneYesNoCallback() {
             @Override
