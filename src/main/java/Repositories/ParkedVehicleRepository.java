@@ -5,8 +5,10 @@
 package Repositories;
 
 import Configs.Database;
-import Interfaces.Model;
-import Interfaces.ModelCollection;
+import java.util.List;
+import Models.ParkedVehicle;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 /**
@@ -14,9 +16,43 @@ import Interfaces.ModelCollection;
  * @author arfanxn
  */
 public class ParkedVehicleRepository extends Repository {
-
-    public ParkedVehicleRepository(Database databaseConfig, Model model, ModelCollection modelCollection) {
-        super(databaseConfig, model, modelCollection);
+    
+    private ParkedVehicle model;
+    private List<ParkedVehicle> collection;
+    
+    public ParkedVehicleRepository(Database databaseConfig) throws SQLException {
+        super(databaseConfig);
+        this.model = new ParkedVehicle();
     }
+
+    public ParkedVehicle getModel() {
+        return model;
+    }
+
+    public void setModel(ParkedVehicle model) {
+        this.model = model;
+    }
+    
+    public List<ParkedVehicle> getCollection() {
+        return collection;
+    }
+    
+    public ParkedVehicleRepository all() throws SQLException {
+        this.buildSelectQueryString(this.model.getTableName());
+
+        // Assign the values
+        this.setPreparedStatement(this.getConnection().prepareStatement(this.getQueryString()));
+        this.setResultSet(this.getPreparedStatement().executeQuery());
+        this.setResultSetMetaData(this.getResultSet().getMetaData());
+
+        while (this.getResultSet().next()) {
+            this.collection = this.collection == null ? new ArrayList<>() : this.collection;
+            this.collection.add(model.fillByResultSet(this.getResultSet()));
+        }
+
+        return this;
+    }
+
+    
 
 }

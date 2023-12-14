@@ -4,6 +4,8 @@
  */
 package Models;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -12,17 +14,18 @@ import java.util.Date;
  */
 public class ParkedVehicle implements Interfaces.Model {
 
-    private final String tableName;
+    private String tableName;
+    private String[] columnNames;
+    private String id;
+    private String plateNumber;
+    private java.util.Date enteredAt;
+    private java.util.Date leftAt;
+    private java.util.Date updatedAt;
 
     public ParkedVehicle() {
         this.tableName = "parked_vehicles";
-
+        this.columnNames = new String[]{"id", "plate_number", "entered_at", "left_at", "updated_at"};
     }
-
-    private String id;
-    private String vehiclePlateNumber;
-    private java.util.Date enteredAt;
-    private java.util.Date leftAt;
 
     @Override
     public String getTableName() {
@@ -37,12 +40,12 @@ public class ParkedVehicle implements Interfaces.Model {
         this.id = id;
     }
 
-    public String getVehiclePlateNumber() {
-        return vehiclePlateNumber;
+    public String getPlateNumber() {
+        return plateNumber;
     }
 
-    public void setVehiclePlateNumber(String vehiclePlateNumber) {
-        this.vehiclePlateNumber = vehiclePlateNumber;
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
     }
 
     public Date getEnteredAt() {
@@ -60,4 +63,37 @@ public class ParkedVehicle implements Interfaces.Model {
     public void setLeftAt(Date leftAt) {
         this.leftAt = leftAt;
     }
+    
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+    
+    public String[] getColumnNames() {
+        return this.columnNames;
+    }
+    
+    public Object[] getValues() {
+        return new Object[]{
+            this.getId(),
+            this.getPlateNumber(),
+            this.getEnteredAt(),
+            this.getLeftAt(),
+            this.getUpdatedAt()
+        };
+    }
+
+    public ParkedVehicle fillByResultSet(ResultSet resultSet) throws SQLException {
+        String[] cns = this.getColumnNames();
+        this.setId(resultSet.getString(cns[0]));
+        this.setPlateNumber(resultSet.getString(cns[1]));
+        this.setEnteredAt(resultSet.getDate(cns[2]));
+        this.setLeftAt(resultSet.getDate(cns[3]));
+        this.setUpdatedAt(resultSet.getDate(cns[4]));
+        return this;
+    }
+    
 }

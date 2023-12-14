@@ -31,8 +31,9 @@ public class Repository {
     private ResultSetMetaData resultSetMetaData;
     private StringBuilder queryStringBuilder;
     
-    public Repository(Configs.Database databaseConfig) {
+    public Repository(Configs.Database databaseConfig) throws SQLException {
         this.databaseConfig = databaseConfig;
+        this.connection = DriverManager.getConnection(databaseConfig.getJdbcUrlString());
         this.orderBys = new HashMap<>();
     }
    
@@ -56,27 +57,24 @@ public class Repository {
         return limit;
     }
 
-    public Repository setLimit(int limit) {
+    public void setLimit(int limit) {
         this.limit = limit;
-        return this;
     }
 
     public int getOffset() {
         return offset;
     }
 
-    public Repository setOffset(int offset) {
+    public void setOffset(int offset) {
         this.offset = offset;
-        return this;
     }
 
     public String getKeyword() {
         return keyword;
     }
 
-    public Repository setKeyword(String keyword) {
+    public void setKeyword(String keyword) {
         this.keyword = keyword;
-        return this;
     }
 
     public Database getDatabase() {
