@@ -4,16 +4,20 @@
  */
 package Interfaces;
 
-import Models.ParkedVehicleCollection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
  * @author arfanxn
  */
 public interface ModelCollection {
+    
+    public ModelCollection setCollection(ResultSet resultSet) throws SQLException;
 
-    public ParkedVehicleCollection setCollection(ResultSet resultSet) throws SQLException;
+    public List<Model> getCollection();
+
+    public Object[][] getCollectionAsRowData();
 
 }
