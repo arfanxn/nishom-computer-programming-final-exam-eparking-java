@@ -71,11 +71,14 @@ public class ParkedVehicle implements Interfaces.Model {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
-    
+
+
+    @Override
     public String[] getColumnNames() {
         return this.columnNames;
     }
     
+    @Override
     public Object[] getValues() {
         return new Object[]{
             this.getId(),
