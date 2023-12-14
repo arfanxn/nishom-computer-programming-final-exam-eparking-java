@@ -5,6 +5,7 @@
 package Containers;
 
 import Repositories.ParkedVehicleRepository;
+import java.sql.SQLException;
 
 /**
  *
@@ -12,7 +13,7 @@ import Repositories.ParkedVehicleRepository;
  */
 public class Repository {
 
-    public static ParkedVehicleRepository initParkedVehicleRepository() {
+    public static ParkedVehicleRepository initParkedVehicleRepository() throws SQLException {
         var databaseConfig = Configs.Database.getInstance();
         ParkedVehicleRepository repository = new ParkedVehicleRepository(databaseConfig);
         return repository;
