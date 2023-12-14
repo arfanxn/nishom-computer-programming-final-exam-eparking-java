@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,18 +17,25 @@ import java.util.Map;
 /**
  *
  * @author arfanxn
- * @param <M>
- * @param <MC>
  *
  */
-public class Repository<M extends Interfaces.Model, MC extends Interfaces.ModelCollection> implements Interfaces.Repository {
+public class Repository {
 
     private Configs.Database databaseConfig;
-    private M model;
-    private MC modelCollection;
-    private ResultSet resultSet;
     private int limit, offset;
     private Map<String, String> orderBys;
+    private String keyword;
+    private Connection connection;
+    private PreparedStatement preparedStatement;
+    private ResultSet resultSet;
+    private ResultSetMetaData resultSetMetaData;
+    private StringBuilder queryStringBuilder;
+    
+    public Repository(Configs.Database databaseConfig) {
+        this.databaseConfig = databaseConfig;
+        this.orderBys = new HashMap<>();
+    }
+   
 
     public Map<String, String> getOrderBys() {
         return orderBys;
@@ -41,34 +49,6 @@ public class Repository<M extends Interfaces.Model, MC extends Interfaces.ModelC
     public Repository addOrderBy(String column, String orderBy) {
         this.orderBys = this.orderBys == null ? new HashMap<>() : this.orderBys;
         this.orderBys.put(column, orderBy);
-        return this;
-    }
-
-    private String keyword;
-
-    public Repository(Configs.Database databaseConfig, M model, MC modelCollection) {
-        this.databaseConfig = databaseConfig;
-        this.model = model;
-        this.modelCollection = modelCollection;
-    }
-
-    @Override
-    public M getModel() {
-        return (M) this.model;
-    }
-
-    public Repository setModel(M model) {
-        this.model = model;
-        return this;
-    }
-    
-    @Override
-    public MC getModelCollection() {
-        return (MC) this.modelCollection;
-    }
-
-    public Repository setModelCollection(MC modelCollection) {
-        this.modelCollection = modelCollection;
         return this;
     }
 
@@ -110,45 +90,72 @@ public class Repository<M extends Interfaces.Model, MC extends Interfaces.ModelC
         return this;
     }
 
-    public Repository get() throws SQLException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = DriverManager.getConnection(databaseConfig.getJdbcUrlString());
+    public Connection getConnection() {
+        return connection;
+    }
 
-            StringBuilder queryStringBuilder = new StringBuilder();
-            queryStringBuilder.append("SELECT * FROM");
-            queryStringBuilder.append(" ").append(this.getModel().getTableName());
-            if (this.limit != 0) {
-                queryStringBuilder.append(" LIMIT ").append(Integer.toString(this.limit));
-            }
-            if (this.offset != 0) {
-                queryStringBuilder.append(" OFFSET ").append(Integer.toString(this.offset));
-            }
-            if (this.orderBys.isEmpty() == false) {
-                queryStringBuilder.append(" ORDER BY ");
-                int index = 0;
-                for (Map.Entry<String, String> set : this.orderBys.entrySet()) {
-                    String column = set.getKey();
-                    String orderBy = set.getValue();
-                    if (index > 0) {
-                        queryStringBuilder.append(", ");
-                    }
-                    queryStringBuilder.append(column).append(" ").append(orderBy);
-                    index++;
-                }
-            }
+    public PreparedStatement getPreparedStatement() {
+        return preparedStatement;
+    }
+    
+    public void setPreparedStatement(PreparedStatement preparedStatement) {
+        this.preparedStatement = preparedStatement;
+    }
 
-            preparedStatement = connection.prepareStatement(queryStringBuilder.toString());
-            this.resultSet = preparedStatement.executeQuery();
-            
-            return this;
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            Utilities.Database.close(connection, preparedStatement, resultSet);
+    public ResultSet getResultSet() {
+        return resultSet;
+    }
+    
+    public void setResultSet(ResultSet resultSet) {
+        this.resultSet = resultSet;
+    }
+
+    public ResultSetMetaData getResultSetMetaData() {
+        return resultSetMetaData;
+    }
+    
+    public void setResultSetMetaData(ResultSetMetaData resultSetMetaData) {
+        this.resultSetMetaData = resultSetMetaData;
+    }
+
+    public String getQueryString () {
+        return this.queryStringBuilder != null ? this.queryStringBuilder.toString() : "";
+    }
+
+    protected Repository buildSelectQueryString(String tableName) {
+        this.queryStringBuilder = new StringBuilder();
+        this.queryStringBuilder.append("SELECT * FROM");
+        this.queryStringBuilder.append(" ").append(tableName);
+        if (this.limit != 0) {
+            queryStringBuilder.append(" LIMIT ").append(Integer.toString(this.limit));
         }
+        if (this.offset != 0) {
+            this.queryStringBuilder.append(" OFFSET ").append(Integer.toString(this.offset));
+        }
+        if (this.orderBys.isEmpty() == false) {
+            this.queryStringBuilder.append(" ORDER BY ");
+            int index = 0;
+            for (Map.Entry<String, String> set : this.orderBys.entrySet()) {
+                String column = set.getKey();
+                String orderBy = set.getValue();
+                if (index > 0) {
+                    this.queryStringBuilder.append(", ");
+                }
+                this.queryStringBuilder.append(column).append(" ").append(orderBy);
+                index++;
+            }
+        }
+        return this;
+    }
+
+    public Repository openConnection() throws SQLException {
+        this.connection = DriverManager.getConnection(this.databaseConfig.getJdbcUrlString());
+        return this;
+    }
+
+    public Repository closeConnection() {
+        Utilities.Database.close(this.connection, this.preparedStatement, this.resultSet);
+        return this;
     }
 
 }
