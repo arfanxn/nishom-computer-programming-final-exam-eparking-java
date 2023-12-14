@@ -14,9 +14,10 @@ USE e-parking;
 CREATE TABLE parked_vehicles
 (
     id VARCHAR(32) NOT NULL,
-    vehicle_plate_number VARCHAR(9) NOT NULL,
+    plate_number VARCHAR(9) NOT NULL,
     entered_at DATETIME NOT NULL,
     left_at DATETIME,   
+    updated_at DATETIME,   
 
     CONSTRAINT parked_vehicles PRIMARY KEY (id)
 );

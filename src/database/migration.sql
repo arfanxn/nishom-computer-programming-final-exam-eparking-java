@@ -4,19 +4,21 @@
  */
 /**
  * Author:  arfanxn
- * Created: Oct 9, 2023
+ * Created: Nov 22, 2023
  */
 
+CREATE DATABASE e-parking;
+
+USE e-parking;
 
 CREATE TABLE parked_vehicles
 (
-    id VARCHAR(16),
-    vehicle_id VARCHAR(16),
-    vehicle_color VARCHAR(32),
-    vehicle_type VARCHAR(32),
-    vehicle_owner_id VARCHAR(16),
-    rate FLOAT,
-    entered_at DATETIME,
-    left_at DATETIME,
-    updated_at DATETIME
+    id VARCHAR(32) NOT NULL,
+    plate_number VARCHAR(9) NOT NULL,
+    entered_at DATETIME NOT NULL,
+    left_at DATETIME,   
+    updated_at DATETIME,   
+
+    CONSTRAINT parked_vehicles PRIMARY KEY (id)
 );
+
