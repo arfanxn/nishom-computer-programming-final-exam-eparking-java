@@ -26,6 +26,7 @@ public class Repository {
     protected ResultSet resultSet;
     protected ResultSetMetaData resultSetMetaData;
     protected QueryBuilder queryBuilder;
+    protected int totalAffectedRows;
 
     public Repository(Configs.Database databaseConfig) throws SQLException {
         // by default when databaseConfig config isn't provided the repository will use the default one instead
@@ -79,6 +80,15 @@ public class Repository {
 
     public void setQueryBuilder(QueryBuilder queryBuilder) {
         this.queryBuilder = queryBuilder;
+    }
+    
+    
+    public int getTotalAffectedRows() {
+        return this.totalAffectedRows;
+    }
+
+    public void setTotalAffectedRows(int totalAffectedRows) {
+        this.totalAffectedRows = totalAffectedRows;
     }
 
     public Repository openConnection() throws SQLException {

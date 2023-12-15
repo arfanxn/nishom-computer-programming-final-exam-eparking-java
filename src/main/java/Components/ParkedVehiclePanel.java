@@ -37,7 +37,7 @@ public final class ParkedVehiclePanel extends JPanel {
             this.add(searchBarLabeledTFBtnPanel, BorderLayout.PAGE_START);
 
             var pvr = Containers.Repository.initParkedVehicleRepository();
-            pvr.setLimit(1000);
+            pvr.getQueryBuilder().setLimit(1000);
             pvr.get();
             List<ParkedVehicle> parkedVehicles = pvr.getCollection();
 
@@ -46,7 +46,6 @@ public final class ParkedVehiclePanel extends JPanel {
 
             this.scrollPane = new JScrollPane(this.table);
             this.add(scrollPane, BorderLayout.CENTER);
-
 
             pvr.closeConnection();
         } catch (SQLException e) {

@@ -50,7 +50,7 @@ public class ParkedVehicleRepository extends Repository {
 
         while (this.resultSet.next()) {
             this.collection = this.collection == null ? new ArrayList<>() : this.collection;
-            this.collection.add(model.fillByResultSet(this.resultSet));
+            this.collection.add((new ParkedVehicle()).fillByResultSet(this.resultSet));
         }
 
         return this;
@@ -58,17 +58,36 @@ public class ParkedVehicleRepository extends Repository {
 
     public ParkedVehicleRepository create(Models.ParkedVehicle model) throws SQLException {
         this.queryBuilder.buildInsertQuery(1);
+        String queryString = this.queryBuilder.getString();
+        System.out.println(queryString);
 
-        this.preparedStatement = this.connection.prepareStatement(this.queryBuilder.getString());
+        this.preparedStatement = this.connection.prepareStatement(queryString);
         UUID uuid = UUID.randomUUID();
         this.preparedStatement.setString(1, uuid.toString());
         this.preparedStatement.setString(2, model.getPlateNumber());
         this.preparedStatement.setDate(3, new Date(new java.util.Date().getTime()));
-        this.preparedStatement.setDate(4, null);
-        this.preparedStatement.setDate(5, null);
-        this.setResultSet(this.preparedStatement.executeQuery());
+        this.preparedStatement.setNull(4, java.sql.Types.DATE);
+        this.preparedStatement.setNull(5, java.sql.Types.DATE);
+        this.totalAffectedRows = this.preparedStatement.executeUpdate();
 
-        System.out.println(this.getResultSetMetaData());
+        return this;
+    }
+    
+    // update by id
+    public ParkedVehicleRepository update(Models.ParkedVehicle model) throws SQLException {
+        this.queryBuilder.addWhere("id", "=", model.getId());
+        this.queryBuilder.buildUpdateQuery();
+        String queryString = this.queryBuilder.getString();
+
+        this.preparedStatement = this.connection.prepareStatement(queryString);
+        Date sqlDateNow = new Date(new java.util.Date().getTime());
+        this.preparedStatement.setString(1, model.getId());
+        this.preparedStatement.setString(2, model.getPlateNumber());
+        this.preparedStatement.setDate(3, new Date(model.getEnteredAt().getTime()));
+        this.preparedStatement.setDate(4, new Date(model.getLeftAt().getTime()));
+        this.preparedStatement.setDate(5, sqlDateNow);
+        this.preparedStatement.setString(5, model.getId()); // fills the where condition
+        this.totalAffectedRows = this.preparedStatement.executeUpdate();
 
         return this;
     }

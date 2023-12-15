@@ -26,6 +26,7 @@ public class QueryBuilder {
     
     public QueryBuilder () {
         this.orderBys = new HashMap<>();
+        this.wheres = new ArrayList<>();
     }
 
     public String getTableName() {
@@ -129,6 +130,7 @@ public class QueryBuilder {
         if (this.offset != 0) {
             this.qsb.append(" OFFSET ").append(Integer.toString(this.offset));
         }
+        this.buildWhereClause();
         if (this.orderBys.isEmpty() == false) {
             this.qsb.append(" ORDER BY ");
             int index = 0;
@@ -142,6 +144,9 @@ public class QueryBuilder {
                 index++;
             }
         }
+        this.qsb.append(";");
+        
+        System.out.println(this.getString());
         return this;
     }
 
@@ -175,12 +180,55 @@ public class QueryBuilder {
             }
             if ((i + 1) < totalRowsToBeInserted) {
                 this.qsb.append(",");
-            } else {
-                this.qsb.append(";");
+            } 
+        }
+        this.qsb.append(";");
+        return this;
+    }
+    
+    public QueryBuilder buildUpdateQuery() {
+        this.qsb = new StringBuilder();
+        this.qsb.append("UPDATE");
+        this.qsb.append(" ").append(this.getTableName());
+        this.qsb.append(" ").append("SET");
+        for (int i = 0; i < this.getColumnNames().length; i++) {
+            if (i == 0) {
+                this.qsb.append(" ");
+            }
+            this.qsb.append(this.getColumnNames()[i]).append(" = ?");
+            if ((i + 1) < this.getColumnNames().length) {
+                this.qsb.append(", ");
             }
         }
-
+        this.buildWhereClause();
+        this.qsb.append(";");
         return this;
+    }
+    
+    private void buildWhereClause() {
+        int wheresLength = this.wheres.size();
+        if (wheresLength == 0) {
+            return;
+        }
+        
+        this.qsb.append(" ").append("WHERE");
+        for (int i = 0; i < wheresLength; i++) {
+            String[] where = wheres.get(i);
+            String columnName = where[0];
+            String operator = where[1];
+
+            if (i == 0) {
+                this.qsb.append(" ");
+            }
+            this.qsb.append(columnName)
+                    .append(" ")
+                    .append(operator)
+                    .append(" ")
+                    .append("?");
+            if ((i + 1) < wheresLength) {
+                this.qsb.append(", ");
+            }
+        }
     }
     
 }
