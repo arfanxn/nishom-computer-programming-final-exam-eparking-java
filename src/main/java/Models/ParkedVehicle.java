@@ -22,9 +22,29 @@ public class ParkedVehicle implements Interfaces.Model {
     private java.util.Date leftAt;
     private java.util.Date updatedAt;
 
-    public ParkedVehicle() {
+    private void setup () {
         this.tableName = "parked_vehicles";
         this.columnNames = new String[]{"id", "plate_number", "entered_at", "left_at", "updated_at"};
+    }
+
+    public ParkedVehicle() {
+        this.setup();
+    }
+    
+    public ParkedVehicle(
+            String id,
+            String plateNumber,
+            java.util.Date enteredAt,
+            java.util.Date leftAt,
+            java.util.Date updatedAt
+    ) {
+        this.setup();
+
+        this.id = id;
+        this.plateNumber = plateNumber;
+        this.enteredAt = enteredAt;
+        this.leftAt = leftAt;
+        this.updatedAt = updatedAt;
     }
 
     @Override
