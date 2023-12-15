@@ -11,6 +11,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
+ * EPLabeledTextFieldButtonPanel is a component which contains text field at the
+ * left side and button at the right side
+ * 
  * By default this extended JPanel has setVisible(false) So you have to make it
  * visible every time you use it
  *
