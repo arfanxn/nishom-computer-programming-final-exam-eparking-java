@@ -6,6 +6,8 @@ package Utilities;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -20,6 +22,7 @@ public class QueryBuilder {
     private int limit;
     private int offset;
     private Map<String, String> orderBys;
+    private List<String[]> wheres;
     
     public QueryBuilder () {
         this.orderBys = new HashMap<>();
@@ -87,6 +90,22 @@ public class QueryBuilder {
     public QueryBuilder addOrderBy(String column, String orderBy) {
         this.orderBys = this.orderBys == null ? new HashMap<>() : this.orderBys;
         this.orderBys.put(column, orderBy);
+        return this;
+    }
+    
+    public QueryBuilder setWheres(List<String[]> wheres) {
+        this.wheres = wheres;
+        return this;
+    }
+
+    public QueryBuilder removeWheres() {
+        this.wheres = new ArrayList<>();
+        return this;
+    }
+    
+    public QueryBuilder addWhere(String column, String operator, String value) {
+        String[] where = {column, operator, value};
+        this.wheres.add(where);
         return this;
     }
     
@@ -163,5 +182,5 @@ public class QueryBuilder {
 
         return this;
     }
-
+    
 }
