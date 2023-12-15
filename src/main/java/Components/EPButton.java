@@ -10,7 +10,11 @@ import javax.swing.JOptionPane;
 import Interfaces.OptionPaneYesNoCallback;
 
 /**
+ * EPButton is a customized JButton, you can enable a confirmation dialog after
+ * the button is clicked by set the optionPaneYesNoCallback property or disable
+ * by keep it null
  *
+ * 
  * @author arfanxn
  */
 public class EPButton extends JButton {
