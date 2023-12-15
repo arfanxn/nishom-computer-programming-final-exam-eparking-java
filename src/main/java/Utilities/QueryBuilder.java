@@ -141,7 +141,7 @@ public class QueryBuilder {
                 this.qsb.append(")");
             }
         }
-
+        this.qsb.append(" ").append("VALUES");
         for (int i = 0; i < totalRowsToBeInserted; i++) {
             for (int j = 0; j < this.getColumnNames().length; j++) {
                 if (j == 0) {
