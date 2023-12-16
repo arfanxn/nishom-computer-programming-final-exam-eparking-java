@@ -4,10 +4,14 @@
  */
 package Components;
 
-import Containers.Repository;
+import Containers.Controllers;
+import Containers.Repositories;
+import Controllers.ParkedVehicleController;
 import Interfaces.OptionPaneYesNoCallback;
 import Models.ParkedVehicle;
 import Repositories.ParkedVehicleRepository;
+import Requests.ParkedVehicle.EnterRequest;
+import Requests.ParkedVehicle.LeaveRequest;
 import java.awt.BorderLayout;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -33,28 +37,18 @@ public class VehicleOutPanel extends JPanel {
             @Override
             public void onOptionYes() {
                 try {
-                    String plateNumber = vehicleIdLabeledTFBtnPanel.getTextField().getText();
-                    if (plateNumber.length() < 9 || plateNumber.length() > 12) {
-                        throw new Exceptions.Validation("Invalid plate number");
-                    }
+                    LeaveRequest request = new LeaveRequest();
+                    request.setPlateNumber(vehicleIdLabeledTFBtnPanel.getTextField().getText());
 
-                    ParkedVehicleRepository pvr = Repository.initParkedVehicleRepository();
-                    ParkedVehicle parkedVehicle = new ParkedVehicle();
-                    parkedVehicle.setPlateNumber(plateNumber);
-                    pvr.getQueryBuilder().addWhere("plate_number", "=", plateNumber);
-                    pvr.getPreparedStatement().setString(1, plateNumber);
-                    pvr.get();
-                    parkedVehicle = pvr.getCollection().get(0);
-                    pvr.update(parkedVehicle);
-                    if (pvr.getTotalAffectedRows() == 0) {
-                        throw new SQLException("Update failed");
-                    }
+                    ParkedVehicleController pvc = Controllers.initParkedVehicle();
+                    ParkedVehicle parkedVehicle = pvc.leave(request);
 
                     JOptionPane.showMessageDialog(
                             null,
                             "Success",
-                            "Vehicle with plate number: " + plateNumber + " has been marked as left",
-                            JOptionPane.INFORMATION_MESSAGE);
+                            "Vehicle with plate number: " + parkedVehicle.getPlateNumber() + " has been marked as left",
+                            JOptionPane.INFORMATION_MESSAGE
+                );
                 } catch (SQLException e) {
                     System.out.println(e);
                 } catch (Exceptions.Validation e) {

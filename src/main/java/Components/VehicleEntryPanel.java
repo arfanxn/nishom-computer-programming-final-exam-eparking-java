@@ -7,9 +7,10 @@ package Components;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import Interfaces.OptionPaneYesNoCallback;
-import Repositories.ParkedVehicleRepository;
-import Containers.Repository;
+import Containers.Controllers;
+import Controllers.ParkedVehicleController;
 import Models.ParkedVehicle;
+import Requests.ParkedVehicle.EnterRequest;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
@@ -18,6 +19,8 @@ import javax.swing.JOptionPane;
  * @author arfanxn
  */
 public class VehicleEntryPanel extends JPanel {
+    
+    EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel;
 
     public VehicleEntryPanel() {
         this.setupViews();
@@ -26,27 +29,23 @@ public class VehicleEntryPanel extends JPanel {
     private void setupViews() {
         this.setLayout(new BorderLayout());
 
-        EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
+        vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
         vehicleIdLabeledTFBtnPanel.getLabel().setText("Plate Number");
         vehicleIdLabeledTFBtnPanel.getButton().setText("Submit");
         vehicleIdLabeledTFBtnPanel.getButton().setOptionPaneYesNoCallback(new OptionPaneYesNoCallback() {
             @Override
             public void onOptionYes() {
-                try {
-                    String plateNumber = vehicleIdLabeledTFBtnPanel.getTextField().getText();
-                    if (plateNumber.length() < 9 || plateNumber.length() > 12) {
-                        throw new Exceptions.Validation("Invalid plate number");
-                    }
-                    
-                    ParkedVehicleRepository pvr = Repository.initParkedVehicleRepository();
-                    ParkedVehicle parkedVehicle = new ParkedVehicle();
-                    parkedVehicle.setPlateNumber(plateNumber);
-                    pvr.create(parkedVehicle);
-                    
+                try {                  
+                    EnterRequest request = new EnterRequest();
+                    request.setPlateNumber(vehicleIdLabeledTFBtnPanel.getTextField().getText());
+
+                    ParkedVehicleController pvc = Controllers.initParkedVehicle();
+                    ParkedVehicle parkedVehicle = pvc.enter(request);
+
                     JOptionPane.showMessageDialog(
                             null,
                             "Success",
-                            "Vehicle with plate number: " + plateNumber + " has been marked as entered",
+                            "Vehicle with plate number: " + parkedVehicle.getPlateNumber() + " has been marked as entered",
                             JOptionPane.INFORMATION_MESSAGE);
                 } catch (SQLException e) {
                     System.out.println(e);
