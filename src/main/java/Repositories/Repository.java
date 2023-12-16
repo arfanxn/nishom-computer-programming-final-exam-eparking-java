@@ -88,14 +88,29 @@ public class Repository {
         this.totalAffectedRows = totalAffectedRows;
     }
 
+    // openConnection opens a new connection
     public Repository openConnection() throws SQLException {
         this.connection = DriverManager.getConnection(this.databaseConfig.getJdbcUrlString());
         return this;
     }
 
+    // closeConnection resets the string builder and closes the connection
     public Repository closeConnection() {
-        Utilities.Database.close(this.connection, this.preparedStatement, this.resultSet);
         this.stringBuilder = new StringBuilder(); // reset string builder 
+        
+        try {
+            this.resultSet.close();
+        } catch (SQLException e) {
+            /* Ignored */ }
+        try {
+            this.preparedStatement.close();
+        } catch (SQLException e) {
+            /* Ignored */ }
+        try {
+            this.connection.close();
+        } catch (SQLException e) {
+            /* Ignored */ }
+
         return this;
     }
 
