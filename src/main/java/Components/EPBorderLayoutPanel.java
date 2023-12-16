@@ -46,7 +46,6 @@ public class EPBorderLayoutPanel extends JPanel {
             case NORTH -> {
                 this.mainComponentPanel.add(mainComponent, BorderLayout.CENTER);
                 this.add(mainComponentPanel, BorderLayout.NORTH);
-                System.out.println("Executed");
                 break;
             }
             case NORTHEAST -> {
