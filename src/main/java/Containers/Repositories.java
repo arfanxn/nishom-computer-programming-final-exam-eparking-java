@@ -11,9 +11,9 @@ import java.sql.SQLException;
  *
  * @author arfanxn
  */
-public class Repository {
+public class Repositories {
 
-    public static ParkedVehicleRepository initParkedVehicleRepository() throws SQLException {
+    public static ParkedVehicleRepository initParkedVehicle() throws SQLException {
         var databaseConfig = Configs.Database.getInstance();
         ParkedVehicleRepository repository = new ParkedVehicleRepository(databaseConfig);
         return repository;
