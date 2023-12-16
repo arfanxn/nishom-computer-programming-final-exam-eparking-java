@@ -97,18 +97,18 @@ public class Repository {
     // closeConnection resets the string builder and closes the connection
     public Repository closeConnection() {
         this.stringBuilder = new StringBuilder(); // reset string builder 
-        
+
         try {
             this.resultSet.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             /* Ignored */ }
         try {
             this.preparedStatement.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             /* Ignored */ }
         try {
             this.connection.close();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             /* Ignored */ }
 
         return this;
