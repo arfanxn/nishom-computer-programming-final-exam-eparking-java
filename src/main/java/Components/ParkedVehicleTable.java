@@ -24,6 +24,11 @@ public class ParkedVehicleTable extends JTable {
         this.setModel(tableModel);
     }
 
+    public void replaceRows(List<ParkedVehicle> rows) {
+        this.removeRows();
+        this.setRows(rows);
+    }
+
     public void setRows(List<ParkedVehicle> rows) {
         this.rows = rows;
         DefaultTableModel tableModel = (DefaultTableModel) this.getModel();
