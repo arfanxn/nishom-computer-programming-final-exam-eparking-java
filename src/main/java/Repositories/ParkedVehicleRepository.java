@@ -138,8 +138,6 @@ public class ParkedVehicleRepository extends Repository {
             this.stringBuilder.append((i < (columnNamesLength - 1)) ? ", " : "");
         }
         this.stringBuilder.append(" WHERE id = ?");
-        
-        System.out.println(this.stringBuilder.toString());
 
         this.preparedStatement = this.connection.prepareStatement(this.stringBuilder.toString());
         
