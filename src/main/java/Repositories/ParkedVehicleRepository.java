@@ -7,10 +7,8 @@ package Repositories;
 import Configs.Database;
 import java.util.List;
 import Models.ParkedVehicle;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  *
@@ -24,7 +22,6 @@ public class ParkedVehicleRepository extends Repository {
     public ParkedVehicleRepository(Database databaseConfig) throws SQLException {
         super(databaseConfig);
         this.model = new ParkedVehicle();
-        this.queryBuilder.fillByModel(this.model);
     }
 
     public ParkedVehicle getModel() {
@@ -39,57 +36,137 @@ public class ParkedVehicleRepository extends Repository {
         return collection;
     }
 
-    public ParkedVehicleRepository get() throws SQLException {
-        this.queryBuilder.buildSelectQuery();
-        String queryString = this.queryBuilder.getString();
+    // all
+    public ParkedVehicleRepository all() throws SQLException {
+        this.openConnection();
+        
+        this.stringBuilder
+                .append("SELECT * FROM ")
+                .append(this.model.getTableName())
+                .append(" ORDER BY `entered_at` DESC");
 
-        // Assign the values
-        this.preparedStatement = this.connection.prepareStatement(queryString);
+        this.preparedStatement = this.connection.prepareStatement(this.stringBuilder.toString());
         this.resultSet = preparedStatement.executeQuery();
         this.resultSetMetaData = this.resultSet.getMetaData();
 
+        this.collection = new ArrayList<>();
         while (this.resultSet.next()) {
-            this.collection = this.collection == null ? new ArrayList<>() : this.collection;
             this.collection.add((new ParkedVehicle()).fillByResultSet(this.resultSet));
         }
 
-        return this;
-    }
-
-    public ParkedVehicleRepository create(Models.ParkedVehicle model) throws SQLException {
-        this.queryBuilder.buildInsertQuery(1);
-        String queryString = this.queryBuilder.getString();
-        System.out.println(queryString);
-
-        this.preparedStatement = this.connection.prepareStatement(queryString);
-        UUID uuid = UUID.randomUUID();
-        this.preparedStatement.setString(1, uuid.toString());
-        this.preparedStatement.setString(2, model.getPlateNumber());
-        this.preparedStatement.setDate(3, new Date(new java.util.Date().getTime()));
-        this.preparedStatement.setNull(4, java.sql.Types.DATE);
-        this.preparedStatement.setNull(5, java.sql.Types.DATE);
-        this.totalAffectedRows = this.preparedStatement.executeUpdate();
-
+        this.closeConnection();
         return this;
     }
     
-    // update by id
-    public ParkedVehicleRepository update(Models.ParkedVehicle model) throws SQLException {
-        this.queryBuilder.addWhere("id", "=", model.getId());
-        this.queryBuilder.buildUpdateQuery();
-        String queryString = this.queryBuilder.getString();
+    // findByPlateNumber finds by plate number
+    public ParkedVehicleRepository findByPlateNumber(String plateNumber) throws SQLException {
+        this.openConnection();
+        
+        this.stringBuilder
+                .append("SELECT * FROM ")
+                .append(this.model.getTableName())
+                .append(" WHERE plate_number = ?");
 
-        this.preparedStatement = this.connection.prepareStatement(queryString);
-        Date sqlDateNow = new Date(new java.util.Date().getTime());
-        this.preparedStatement.setString(1, model.getId());
-        this.preparedStatement.setString(2, model.getPlateNumber());
-        this.preparedStatement.setDate(3, new Date(model.getEnteredAt().getTime()));
-        this.preparedStatement.setDate(4, new Date(model.getLeftAt().getTime()));
-        this.preparedStatement.setDate(5, sqlDateNow);
-        this.preparedStatement.setString(5, model.getId()); // fills the where condition
-        this.totalAffectedRows = this.preparedStatement.executeUpdate();
+        this.preparedStatement = this.connection.prepareStatement(this.stringBuilder.toString());
+        this.preparedStatement.setString(1, plateNumber); // sets where plate_number = ? 
+        this.resultSet = preparedStatement.executeQuery();
+        this.resultSetMetaData = this.resultSet.getMetaData();
 
+        this.collection = new ArrayList<>();
+        while (this.resultSet.next()) {
+            this.model = (new ParkedVehicle()).fillByResultSet(this.resultSet);
+            this.collection.add((new ParkedVehicle()).fillByResultSet(this.resultSet));
+        }
+
+        this.closeConnection();
         return this;
     }
+
+    // insert
+    public ParkedVehicleRepository insert(List<Models.ParkedVehicle> parkedVehicles) throws SQLException {
+        this.openConnection();
+        
+        this.stringBuilder
+                .append("INSERT INTO ")
+                .append(this.model.getTableName())
+                .append(" (")
+                .append(String.join(", ", this.model.getColumnNames()))
+                .append(")")
+                .append(" VALUES")
+                .append(" (")
+                .append("?, ".repeat(this.model.getValues().length - 1)).append("?")
+                .append(")");
+
+        this.preparedStatement = this.connection.prepareStatement(this.stringBuilder.toString());
+        
+        int i = 0;
+        for (ParkedVehicle parkedVehicle : parkedVehicles) {
+            this.preparedStatement.setObject(1, parkedVehicle.getId());
+            this.preparedStatement.setObject(2, parkedVehicle.getPlateNumber());
+            this.preparedStatement.setObject(3, parkedVehicle.getEnteredAt());
+            this.preparedStatement.setObject(4, parkedVehicle.getLeftAt());
+            this.preparedStatement.setObject(5, parkedVehicle.getUpdatedAt());
+            
+            this.preparedStatement.addBatch();
+            i++;
+            
+            if (i % 100 == 0 || i == parkedVehicles.size()) {
+                int[] tars = this.preparedStatement.executeBatch(); // Execute every 100 items.
+                for (int tar : tars)
+                    this.totalAffectedRows += tar;
+            }
+        }
+
+        this.closeConnection();
+        return this;
+    }
+    
+    // update by id or ids
+    public ParkedVehicleRepository update(List<Models.ParkedVehicle> parkedVehicles) throws SQLException {
+        this.openConnection();
+        
+        int columnNamesLength = this.model.getColumnNames().length;
+        this.stringBuilder
+                .append("UPDATE ")
+                .append(this.model.getTableName())
+                .append(" SET ");
+        for (int i = 0; i < columnNamesLength; i++) {
+            String columnName = this.model.getColumnNames()[i];
+            this.stringBuilder
+                    .append(columnName)
+                    .append(" = ?");
+            this.stringBuilder.append((i < (columnNamesLength - 1)) ? ", " : "");
+        }
+        this.stringBuilder.append(" WHERE id = ?");
+        
+        System.out.println(this.stringBuilder.toString());
+
+        this.preparedStatement = this.connection.prepareStatement(this.stringBuilder.toString());
+        
+        int i = 0;
+        for (ParkedVehicle parkedVehicle : parkedVehicles) {
+            this.preparedStatement.setObject(1, parkedVehicle.getId());
+            this.preparedStatement.setObject(2, parkedVehicle.getPlateNumber());
+            this.preparedStatement.setObject(3, parkedVehicle.getEnteredAt());
+            this.preparedStatement.setObject(4, parkedVehicle.getLeftAt());
+            this.preparedStatement.setObject(5, parkedVehicle.getUpdatedAt());
+            this.preparedStatement.setObject(6, parkedVehicle.getId()); // where id = ? 
+
+            this.preparedStatement.addBatch();
+            i++;
+
+            if (i % 100 == 0 || i == parkedVehicles.size()) {
+                int[] tars = this.preparedStatement.executeBatch(); // Execute every 100 items.
+                for (int tar : tars) {
+                    this.totalAffectedRows += tar;
+                }
+            }
+        }
+
+        this.closeConnection();
+        return this;
+    }
+    
+
 
 }
