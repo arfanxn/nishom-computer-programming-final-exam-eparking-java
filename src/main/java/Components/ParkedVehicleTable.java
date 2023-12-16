@@ -7,6 +7,7 @@ package Components;
 import javax.swing.JTable;
 import java.util.List;
 import Models.ParkedVehicle;
+import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -31,6 +32,15 @@ public class ParkedVehicleTable extends JTable {
             tableModel.insertRow(index, parkedVehicle.getValues());
             index++;
         }
+        this.setModel(tableModel);
+    }
+
+    public void removeRows() {
+        DefaultTableModel tableModel = (DefaultTableModel) this.getModel();
+        for (int i = (tableModel.getRowCount() - 1); i >= 0; i--) {
+            tableModel.removeRow(i);
+        }
+        this.rows = new ArrayList<>();
         this.setModel(tableModel);
     }
 
