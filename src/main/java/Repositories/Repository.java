@@ -5,7 +5,6 @@
 package Repositories;
 
 import Configs.Database;
-import Utilities.QueryBuilder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -25,14 +24,13 @@ public class Repository {
     protected PreparedStatement preparedStatement;
     protected ResultSet resultSet;
     protected ResultSetMetaData resultSetMetaData;
-    protected QueryBuilder queryBuilder;
+    protected StringBuilder stringBuilder;
     protected int totalAffectedRows;
 
     public Repository(Configs.Database databaseConfig) throws SQLException {
         // by default when databaseConfig config isn't provided the repository will use the default one instead
         this.databaseConfig = this.databaseConfig == null ? Configs.Database.getInstance() : this.databaseConfig;
-        this.connection = DriverManager.getConnection(databaseConfig.getJdbcUrlString());
-        this.queryBuilder = new QueryBuilder();
+        this.stringBuilder = new StringBuilder();
     }
 
     public Database getDatabase() {
@@ -74,15 +72,14 @@ public class Repository {
         this.resultSetMetaData = resultSetMetaData;
     }
     
-    public QueryBuilder getQueryBuilder() {
-        return queryBuilder;
+    public StringBuilder getStringBuilder() {
+        return stringBuilder;
     }
 
-    public void setQueryBuilder(QueryBuilder queryBuilder) {
-        this.queryBuilder = queryBuilder;
+    public void setStringBuilder(StringBuilder sb) {
+        this.stringBuilder = sb;
     }
-    
-    
+
     public int getTotalAffectedRows() {
         return this.totalAffectedRows;
     }
@@ -98,6 +95,7 @@ public class Repository {
 
     public Repository closeConnection() {
         Utilities.Database.close(this.connection, this.preparedStatement, this.resultSet);
+        this.stringBuilder = new StringBuilder(); // reset string builder 
         return this;
     }
 
