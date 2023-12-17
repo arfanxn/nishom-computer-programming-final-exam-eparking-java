@@ -59,7 +59,7 @@ public class ParkedVehicleController {
     public ParkedVehicle updatePlateNumber(UpdatePlateNumberRequest request) throws SQLException, Validation {
         request.validate();
 
-        // TODO:
+        // TODO: implements update parked vehicle plate number by id
 
         return new ParkedVehicle();
     }
