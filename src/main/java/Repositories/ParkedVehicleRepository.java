@@ -66,10 +66,6 @@ public class ParkedVehicleRepository extends Repository {
                 .append(this.model.getTableName())
                 .append(" WHERE `plate_number` LIKE ?")
                 .append(" ORDER BY `entered_at` DESC");
-                
-        
-        System.out.println("Query string");
-        System.out.println(this.qsb.toString());
 
         this.preparedStatement = this.connection.prepareStatement(this.qsb.toString());
         this.preparedStatement.setString(1, "%" + plateNumber + "%");

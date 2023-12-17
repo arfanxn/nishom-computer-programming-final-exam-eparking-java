@@ -45,8 +45,6 @@ public final class ParkedVehiclePanel extends JPanel {
                 var pvc = Controllers.initParkedVehicle();
                 List<ParkedVehicle> parkedVehicles = pvc.searchByPlateNumber(request);
                 table.setRows(parkedVehicles);
-
-                System.out.println(parkedVehicles.toString());
             } catch (Validation e) {
                 System.out.println(e);
                 JOptionPane.showMessageDialog(
