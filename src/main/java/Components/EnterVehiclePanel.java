@@ -42,9 +42,11 @@ public class EnterVehiclePanel extends JPanel {
 
                 JOptionPane.showMessageDialog(
                         null,
-                        "Success",
                         "Vehicle with plate number: " + parkedVehicle.getPlateNumber() + " has been marked as entered",
+                        "Success",
                         JOptionPane.INFORMATION_MESSAGE);
+
+                this.vehicleIdLabeledTFBtnPanel.getTextField().setText(""); // resets the text
             } catch (SQLException e) {
                 System.out.println(e);
             } catch (Exceptions.Validation e) {

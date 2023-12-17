@@ -19,6 +19,8 @@ import javax.swing.JPanel;
  * @author arfanxn
  */
 public class LeaveVehiclePanel extends JPanel {
+    
+    EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel;
 
     public LeaveVehiclePanel() {
         this.setupViews();
@@ -27,7 +29,7 @@ public class LeaveVehiclePanel extends JPanel {
     private void setupViews() {
         this.setLayout(new BorderLayout());
 
-        EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
+        this.vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
         vehicleIdLabeledTFBtnPanel.getLabel().setText("Vehicle Number Plate");
         vehicleIdLabeledTFBtnPanel.getButton().setText("Submit");
         vehicleIdLabeledTFBtnPanel.getButton().setOptionPaneYesListener((ActionEvent event) -> {
@@ -44,6 +46,8 @@ public class LeaveVehiclePanel extends JPanel {
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE
                 );
+                
+                this.vehicleIdLabeledTFBtnPanel.getTextField().setText(""); // resets the text
             } catch (SQLException e) {
                 System.out.println(e);
             } catch (Exceptions.Validation e) {
