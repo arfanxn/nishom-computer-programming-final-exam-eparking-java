@@ -10,7 +10,7 @@ import Exceptions.Validation;
  *
  * @author arfanxn
  */
-public class SearchRequest {
+public class SearchByPlateNumberRequest {
     
     private String plateNumber;
 
