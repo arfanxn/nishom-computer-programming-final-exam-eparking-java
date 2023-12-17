@@ -6,6 +6,8 @@ package Components;
 
 import Containers.Controllers;
 import Controllers.ParkedVehicleController;
+import Exceptions.NotFound;
+import Exceptions.Validation;
 import Models.ParkedVehicle;
 import Requests.ParkedVehicle.LeaveRequest;
 import java.awt.BorderLayout;
@@ -19,7 +21,7 @@ import javax.swing.JPanel;
  * @author arfanxn
  */
 public class LeaveVehiclePanel extends JPanel {
-    
+
     EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel;
 
     public LeaveVehiclePanel() {
@@ -46,17 +48,17 @@ public class LeaveVehiclePanel extends JPanel {
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE
                 );
-                
+
                 this.vehicleIdLabeledTFBtnPanel.getTextField().setText(""); // resets the text
-            } catch (SQLException e) {
-                System.out.println(e);
-            } catch (Exceptions.Validation e) {
+            } catch (Validation | NotFound e) {
                 System.out.println(e);
                 JOptionPane.showMessageDialog(
                         null,
                         e.getMessage(),
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException e) {
+                System.out.println(e);
             }
         });
         vehicleIdLabeledTFBtnPanel.setVisible(true);

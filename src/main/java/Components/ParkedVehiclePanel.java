@@ -4,10 +4,15 @@
  */
 package Components;
 
+import Containers.Controllers;
+import Exceptions.Validation;
+import java.awt.event.ActionEvent;
 import Models.ParkedVehicle;
+import Requests.ParkedVehicle.SearchByPlateNumberRequest;
 import java.awt.BorderLayout;
 import java.util.List;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.AncestorEvent;
@@ -27,43 +32,56 @@ public final class ParkedVehiclePanel extends JPanel {
         this.setupEvents();
     }
 
-    public void setupViews() {
-        try {
-            this.setLayout(new BorderLayout());
+    private void setupViews() {
+        this.setLayout(new BorderLayout());
 
-            EPLabeledTextFieldButtonPanel searchBarLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
-            searchBarLabeledTFBtnPanel.getButton().setText("Search");
-            searchBarLabeledTFBtnPanel.setVisible(true);
-            this.add(searchBarLabeledTFBtnPanel, BorderLayout.PAGE_START);
+        EPLabeledTextFieldButtonPanel searchBarLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
+        searchBarLabeledTFBtnPanel.getButton().setText("Search");
+        searchBarLabeledTFBtnPanel.getButton().addActionListener((ActionEvent event) -> {
+            try {
+                SearchByPlateNumberRequest request = new SearchByPlateNumberRequest();
+                request.setPlateNumber(searchBarLabeledTFBtnPanel.getTextField().getText());
 
-            var pvr = Containers.Repository.initParkedVehicleRepository();
-            pvr.getQueryBuilder().setLimit(1000);
-            pvr.get();
-            List<ParkedVehicle> parkedVehicles = pvr.getCollection();
+                var pvc = Controllers.initParkedVehicle();
+                List<ParkedVehicle> parkedVehicles = pvc.searchByPlateNumber(request);
+                table.setRows(parkedVehicles);
 
-            this.table = new ParkedVehicleTable();
-            this.table.setRows(parkedVehicles);
+                System.out.println(parkedVehicles.toString());
+            } catch (Validation e) {
+                System.out.println(e);
+                JOptionPane.showMessageDialog(
+                        null,
+                        e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException e) {
+                System.out.println(e);
+            }
+        });
+        searchBarLabeledTFBtnPanel.setVisible(true);
+        this.add(searchBarLabeledTFBtnPanel, BorderLayout.PAGE_START);
 
-            this.scrollPane = new JScrollPane(this.table);
-            this.add(scrollPane, BorderLayout.CENTER);
-
-            pvr.closeConnection();
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
+        this.table = new ParkedVehicleTable();
+        this.scrollPane = new JScrollPane(this.table);
+        this.add(scrollPane, BorderLayout.CENTER);
     }
 
-    // Add default events
-    public final void setupEvents() {
+    // setupEvents 
+    private void setupEvents() {
         this.addAncestorListener(new AncestorListener() {
             @Override
             public void ancestorAdded(AncestorEvent event) {
-                System.out.println("ancestorAdded");
+                try {
+                    var pvc = Controllers.initParkedVehicle();
+                    List<ParkedVehicle> parkedVehicles = pvc.all();
+                    table.setRows(parkedVehicles);
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
             }
 
             @Override
             public void ancestorRemoved(AncestorEvent event) {
-                System.out.println("ancestorRemoved");
             }
 
             @Override
