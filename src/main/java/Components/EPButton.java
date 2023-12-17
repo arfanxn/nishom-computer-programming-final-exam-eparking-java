@@ -7,26 +7,27 @@ package Components;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import Interfaces.OptionPaneYesNoCallback;
+import java.awt.event.ActionListener;
 
 /**
  * EPButton is a customized JButton, you can enable a confirmation dialog after
  * the button is clicked by set the optionPaneYesNoCallback property or disable
  * by keep it null
  *
- * 
+ *
  * @author arfanxn
  */
 public class EPButton extends JButton {
 
-    private OptionPaneYesNoCallback optionPaneYesNoCallback;
+    private ActionListener optionPaneYesListener;
+    private ActionListener optionPaneNoListener;
     private String optionPaneMessage, optionPaneTitle;
     private Integer optionPaneType;
 
     public EPButton() {
         super.setVisible(false);
     }
-    
+
     public String getOptionPaneMessage() {
         return this.optionPaneMessage != null ? this.optionPaneMessage : "Are u sure?";
     }
@@ -51,10 +52,6 @@ public class EPButton extends JButton {
         this.optionPaneType = optionType;
     }
 
-    public void setOptionPaneYesNoCallback(OptionPaneYesNoCallback callback) {
-        this.optionPaneYesNoCallback = callback;
-    }
-    
     @Override
     public void setVisible(boolean b) {
         super.setVisible(b);
@@ -62,21 +59,29 @@ public class EPButton extends JButton {
             return;
         }
 
-        if (this.optionPaneYesNoCallback != null) {
+        if (this.optionPaneYesListener != null) {
             this.addActionListener((ActionEvent event) -> {
-            int option = JOptionPane.showConfirmDialog(
-                    null,
-                    this.getOptionPaneMessage(),
-                    this.getOptionPaneTitle(),
-                    (int) this.getOptionPaneType(),
-                    JOptionPane.QUESTION_MESSAGE
-            );
-            if (option == JOptionPane.YES_OPTION) {
-                this.optionPaneYesNoCallback.onOptionYes();
-            } else if (option == JOptionPane.NO_OPTION) {
-                this.optionPaneYesNoCallback.onOptionNo();
-            }
-        });
+                int option = JOptionPane.showConfirmDialog(
+                        null,
+                        this.getOptionPaneMessage(),
+                        this.getOptionPaneTitle(),
+                        (int) this.getOptionPaneType(),
+                        JOptionPane.QUESTION_MESSAGE
+                );
+                if (option == JOptionPane.YES_OPTION) {
+                        this.optionPaneYesListener.actionPerformed(event);
+                } else if (option == JOptionPane.NO_OPTION && this.optionPaneNoListener != null) {
+                        this.optionPaneNoListener.actionPerformed(event);
+                }
+            });
         }
+    }
+
+    public void setOptionPaneYesListener(ActionListener l) {
+        this.optionPaneYesListener = l;
+    }
+
+    public void setOptionPaneNoListener(ActionListener l) {
+        this.optionPaneNoListener = l;
     }
 }
