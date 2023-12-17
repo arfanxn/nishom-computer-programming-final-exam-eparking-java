@@ -19,6 +19,7 @@ import java.awt.event.ActionListener;
  */
 public class EPButton extends JButton {
 
+    private bool isOptionPaneAlreadySet;
     private ActionListener optionPaneYesListener;
     private ActionListener optionPaneNoListener;
     private String optionPaneMessage, optionPaneTitle;
@@ -59,7 +60,7 @@ public class EPButton extends JButton {
             return;
         }
 
-        if (this.optionPaneYesListener != null) {
+        if (this.optionPaneYesListener != null && !isOptionPaneAlreadySet) {
             this.addActionListener((ActionEvent event) -> {
                 int option = JOptionPane.showConfirmDialog(
                         null,
@@ -69,11 +70,13 @@ public class EPButton extends JButton {
                         JOptionPane.QUESTION_MESSAGE
                 );
                 if (option == JOptionPane.YES_OPTION) {
-                        this.optionPaneYesListener.actionPerformed(event);
+                    this.optionPaneYesListener.actionPerformed(event);
                 } else if (option == JOptionPane.NO_OPTION && this.optionPaneNoListener != null) {
-                        this.optionPaneNoListener.actionPerformed(event);
+                    this.optionPaneNoListener.actionPerformed(event);
                 }
             });
+            
+            this.isOptionPaneAlreadySet = true;
         }
     }
 
