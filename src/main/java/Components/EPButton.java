@@ -19,7 +19,7 @@ import java.awt.event.ActionListener;
  */
 public class EPButton extends JButton {
 
-    private bool isOptionPaneAlreadySet;
+    private boolean isOptionPaneAlreadySet;
     private ActionListener optionPaneYesListener;
     private ActionListener optionPaneNoListener;
     private String optionPaneMessage, optionPaneTitle;
@@ -27,6 +27,7 @@ public class EPButton extends JButton {
 
     public EPButton() {
         super.setVisible(false);
+        this.isOptionPaneAlreadySet = false;
     }
 
     public String getOptionPaneMessage() {
