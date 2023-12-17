@@ -24,13 +24,13 @@ public class Repository {
     protected PreparedStatement preparedStatement;
     protected ResultSet resultSet;
     protected ResultSetMetaData resultSetMetaData;
-    protected StringBuilder stringBuilder;
+    protected StringBuilder qsb; // qsb stands for query string builder
     protected int totalAffectedRows;
 
     public Repository(Configs.Database databaseConfig) throws SQLException {
         // by default when databaseConfig config isn't provided the repository will use the default one instead
         this.databaseConfig = this.databaseConfig == null ? Configs.Database.getInstance() : this.databaseConfig;
-        this.stringBuilder = new StringBuilder();
+        this.qsb = new StringBuilder();
     }
 
     public Database getDatabase() {
@@ -72,12 +72,12 @@ public class Repository {
         this.resultSetMetaData = resultSetMetaData;
     }
     
-    public StringBuilder getStringBuilder() {
-        return stringBuilder;
+    public StringBuilder getQSB() {
+        return qsb;
     }
 
-    public void setStringBuilder(StringBuilder sb) {
-        this.stringBuilder = sb;
+    public void setQSB(StringBuilder qsb) {
+        this.qsb = qsb;
     }
 
     public int getTotalAffectedRows() {
@@ -96,7 +96,7 @@ public class Repository {
 
     // closeConnection resets the string builder and closes the connection
     public Repository closeConnection() {
-        this.stringBuilder = new StringBuilder(); // reset string builder 
+        this.qsb = new StringBuilder(); // reset string builder 
 
         try {
             this.resultSet.close();
