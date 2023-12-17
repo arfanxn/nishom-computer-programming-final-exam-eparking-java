@@ -6,6 +6,8 @@ package Components;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -13,7 +15,7 @@ import javax.swing.JTextField;
 /**
  * EPLabeledTextFieldButtonPanel is a component which contains text field at the
  * left side and button at the right side
- * 
+ *
  * By default this extended JPanel has setVisible(false) So you have to make it
  * visible every time you use it
  *
@@ -68,6 +70,11 @@ public class EPLabeledTextFieldButtonPanel extends JPanel {
         if (b == false) {
             return;
         }
+
+        // Add text field on enter buttton clicked event lisnter
+        this.getTextField().addActionListener((ActionEvent e) -> {
+            getButton().doClick(); // click the button after enter key cliked
+        });
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
