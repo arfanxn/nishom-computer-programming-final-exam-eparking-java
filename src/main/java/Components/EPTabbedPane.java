@@ -15,12 +15,12 @@ public class EPTabbedPane extends JTabbedPane {
 
     public EPTabbedPane() {
         ParkedVehiclePanel parkedVehiclePanel = new ParkedVehiclePanel();
-        VehicleEntryPanel vehicleEntryPanel = new VehicleEntryPanel();
-        VehicleOutPanel vehicleOutPanel = new VehicleOutPanel();
+        EnterVehiclePanel enterVehiclePanel = new EnterVehiclePanel();
+        LeaveVehiclePanel vehicleLeavePanel = new LeaveVehiclePanel();
 
         this.add("List", parkedVehiclePanel);
-        this.add("Entry", vehicleEntryPanel);
-        this.add("Out", vehicleOutPanel);
+        this.add("Enter", enterVehiclePanel);
+        this.add("Leave", vehicleLeavePanel);
     }
 
 }

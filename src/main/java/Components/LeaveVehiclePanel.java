@@ -4,47 +4,46 @@
  */
 package Components;
 
-import java.awt.event.ActionEvent;
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
 import Containers.Controllers;
 import Controllers.ParkedVehicleController;
 import Models.ParkedVehicle;
-import Requests.ParkedVehicle.EnterRequest;
+import Requests.ParkedVehicle.LeaveRequest;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
  * @author arfanxn
  */
-public class VehicleEntryPanel extends JPanel {
+public class LeaveVehiclePanel extends JPanel {
 
-    EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel;
-
-    public VehicleEntryPanel() {
+    public LeaveVehiclePanel() {
         this.setupViews();
     }
 
     private void setupViews() {
         this.setLayout(new BorderLayout());
 
-        vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
-        vehicleIdLabeledTFBtnPanel.getLabel().setText("Plate Number");
+        EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
+        vehicleIdLabeledTFBtnPanel.getLabel().setText("Vehicle Number Plate");
         vehicleIdLabeledTFBtnPanel.getButton().setText("Submit");
         vehicleIdLabeledTFBtnPanel.getButton().setOptionPaneYesListener((ActionEvent event) -> {
             try {
-                EnterRequest request = new EnterRequest();
+                LeaveRequest request = new LeaveRequest();
                 request.setPlateNumber(vehicleIdLabeledTFBtnPanel.getTextField().getText());
 
                 ParkedVehicleController pvc = Controllers.initParkedVehicle();
-                ParkedVehicle parkedVehicle = pvc.enter(request);
+                ParkedVehicle parkedVehicle = pvc.leave(request);
 
                 JOptionPane.showMessageDialog(
                         null,
+                        "Vehicle with plate number: " + parkedVehicle.getPlateNumber() + " has been marked as left",
                         "Success",
-                        "Vehicle with plate number: " + parkedVehicle.getPlateNumber() + " has been marked as entered",
-                        JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.INFORMATION_MESSAGE
+                );
             } catch (SQLException e) {
                 System.out.println(e);
             } catch (Exceptions.Validation e) {
@@ -59,5 +58,4 @@ public class VehicleEntryPanel extends JPanel {
         vehicleIdLabeledTFBtnPanel.setVisible(true);
         this.add(vehicleIdLabeledTFBtnPanel, BorderLayout.NORTH);
     }
-
 }
