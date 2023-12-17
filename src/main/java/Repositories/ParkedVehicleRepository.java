@@ -40,12 +40,12 @@ public class ParkedVehicleRepository extends Repository {
     public ParkedVehicleRepository all() throws SQLException {
         this.openConnection();
         
-        this.stringBuilder
+        this.qsb
                 .append("SELECT * FROM ")
                 .append(this.model.getTableName())
                 .append(" ORDER BY `entered_at` DESC");
 
-        this.preparedStatement = this.connection.prepareStatement(this.stringBuilder.toString());
+        this.preparedStatement = this.connection.prepareStatement(this.qsb.toString());
         this.resultSet = preparedStatement.executeQuery();
         this.resultSetMetaData = this.resultSet.getMetaData();
 
@@ -58,16 +58,67 @@ public class ParkedVehicleRepository extends Repository {
         return this;
     }
     
+    public ParkedVehicleRepository searchByPlateNumber(String plateNumber) throws SQLException {
+        this.openConnection();
+
+        this.qsb
+                .append("SELECT * FROM ")
+                .append(this.model.getTableName())
+                .append(" WHERE `plate_number` LIKE ?")
+                .append(" ORDER BY `entered_at` DESC");
+                
+        
+        System.out.println("Query string");
+        System.out.println(this.qsb.toString());
+
+        this.preparedStatement = this.connection.prepareStatement(this.qsb.toString());
+        this.preparedStatement.setString(1, "%" + plateNumber + "%");
+        this.resultSet = preparedStatement.executeQuery();
+        this.resultSetMetaData = this.resultSet.getMetaData();
+
+        this.collection = new ArrayList<>();
+        while (this.resultSet.next()) {
+            this.collection.add((new ParkedVehicle()).fillByResultSet(this.resultSet));
+        }
+
+        this.closeConnection();
+        return this;
+    }
+    
+    // find finds by id 
+    public ParkedVehicleRepository find(String id) throws SQLException {
+        this.openConnection();
+        
+        this.qsb
+                .append("SELECT * FROM ")
+                .append(this.model.getTableName())
+                .append(" WHERE id = ?");
+
+        this.preparedStatement = this.connection.prepareStatement(this.qsb.toString());
+        this.preparedStatement.setString(1, id); // sets where id = ? 
+        this.resultSet = preparedStatement.executeQuery();
+        this.resultSetMetaData = this.resultSet.getMetaData();
+
+        this.collection = new ArrayList<>();
+        while (this.resultSet.next()) {
+            this.model = (new ParkedVehicle()).fillByResultSet(this.resultSet);
+            this.collection.add((new ParkedVehicle()).fillByResultSet(this.resultSet));
+        }
+
+        this.closeConnection();
+        return this;
+    }
+    
     // findByPlateNumber finds by plate number
     public ParkedVehicleRepository findByPlateNumber(String plateNumber) throws SQLException {
         this.openConnection();
         
-        this.stringBuilder
+        this.qsb
                 .append("SELECT * FROM ")
                 .append(this.model.getTableName())
                 .append(" WHERE plate_number = ?");
 
-        this.preparedStatement = this.connection.prepareStatement(this.stringBuilder.toString());
+        this.preparedStatement = this.connection.prepareStatement(this.qsb.toString());
         this.preparedStatement.setString(1, plateNumber); // sets where plate_number = ? 
         this.resultSet = preparedStatement.executeQuery();
         this.resultSetMetaData = this.resultSet.getMetaData();
@@ -86,7 +137,7 @@ public class ParkedVehicleRepository extends Repository {
     public ParkedVehicleRepository insert(List<Models.ParkedVehicle> parkedVehicles) throws SQLException {
         this.openConnection();
         
-        this.stringBuilder
+        this.qsb
                 .append("INSERT INTO ")
                 .append(this.model.getTableName())
                 .append(" (")
@@ -97,7 +148,7 @@ public class ParkedVehicleRepository extends Repository {
                 .append("?, ".repeat(this.model.getValues().length - 1)).append("?")
                 .append(")");
 
-        this.preparedStatement = this.connection.prepareStatement(this.stringBuilder.toString());
+        this.preparedStatement = this.connection.prepareStatement(this.qsb.toString());
         
         int i = 0;
         for (ParkedVehicle parkedVehicle : parkedVehicles) {
@@ -126,20 +177,20 @@ public class ParkedVehicleRepository extends Repository {
         this.openConnection();
         
         int columnNamesLength = this.model.getColumnNames().length;
-        this.stringBuilder
+        this.qsb
                 .append("UPDATE ")
                 .append(this.model.getTableName())
                 .append(" SET ");
         for (int i = 0; i < columnNamesLength; i++) {
             String columnName = this.model.getColumnNames()[i];
-            this.stringBuilder
+            this.qsb
                     .append(columnName)
                     .append(" = ?");
-            this.stringBuilder.append((i < (columnNamesLength - 1)) ? ", " : "");
+            this.qsb.append((i < (columnNamesLength - 1)) ? ", " : "");
         }
-        this.stringBuilder.append(" WHERE id = ?");
+        this.qsb.append(" WHERE id = ?");
 
-        this.preparedStatement = this.connection.prepareStatement(this.stringBuilder.toString());
+        this.preparedStatement = this.connection.prepareStatement(this.qsb.toString());
         
         int i = 0;
         for (ParkedVehicle parkedVehicle : parkedVehicles) {
