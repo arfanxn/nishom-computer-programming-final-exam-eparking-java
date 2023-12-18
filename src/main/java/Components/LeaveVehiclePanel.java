@@ -10,11 +10,13 @@ import Exceptions.NotFound;
 import Exceptions.Validation;
 import Models.ParkedVehicle;
 import Requests.ParkedVehicle.LeaveRequest;
+import Utilities.UppercaseDocumentFilter;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.text.AbstractDocument;
 
 /**
  *
@@ -33,6 +35,8 @@ public class LeaveVehiclePanel extends JPanel {
 
         this.vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
         vehicleIdLabeledTFBtnPanel.getLabel().setText("Vehicle Number Plate");
+        ((AbstractDocument) vehicleIdLabeledTFBtnPanel.getTextField().getDocument())
+                .setDocumentFilter(new UppercaseDocumentFilter());
         vehicleIdLabeledTFBtnPanel.getButton().setText("Submit");
         vehicleIdLabeledTFBtnPanel.getButton().setOptionPaneYesListener((ActionEvent event) -> {
             try {

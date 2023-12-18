@@ -9,6 +9,7 @@ import Exceptions.Validation;
 import java.awt.event.ActionEvent;
 import Models.ParkedVehicle;
 import Requests.ParkedVehicle.SearchByPlateNumberRequest;
+import Utilities.UppercaseDocumentFilter;
 import java.awt.BorderLayout;
 import java.util.List;
 import java.sql.SQLException;
@@ -17,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import javax.swing.text.AbstractDocument;
 
 /**
  *
@@ -36,6 +38,8 @@ public final class ParkedVehiclePanel extends JPanel {
         this.setLayout(new BorderLayout());
 
         EPLabeledTextFieldButtonPanel searchBarLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
+        ((AbstractDocument) searchBarLabeledTFBtnPanel.getTextField().getDocument())
+                .setDocumentFilter(new UppercaseDocumentFilter());
         searchBarLabeledTFBtnPanel.getButton().setText("Search");
         searchBarLabeledTFBtnPanel.getButton().addActionListener((ActionEvent event) -> {
             try {

@@ -11,8 +11,10 @@ import Containers.Controllers;
 import Controllers.ParkedVehicleController;
 import Models.ParkedVehicle;
 import Requests.ParkedVehicle.EnterRequest;
+import Utilities.UppercaseDocumentFilter;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.text.AbstractDocument;
 
 /**
  *
@@ -31,6 +33,8 @@ public class EnterVehiclePanel extends JPanel {
 
         vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
         vehicleIdLabeledTFBtnPanel.getLabel().setText("Plate Number");
+        ((AbstractDocument) vehicleIdLabeledTFBtnPanel.getTextField().getDocument())
+                .setDocumentFilter(new UppercaseDocumentFilter());
         vehicleIdLabeledTFBtnPanel.getButton().setText("Submit");
         vehicleIdLabeledTFBtnPanel.getButton().setOptionPaneYesListener((ActionEvent event) -> {
             try {
