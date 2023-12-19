@@ -13,8 +13,8 @@ USE e-parking;
 
 CREATE TABLE parked_vehicles
 (
-    id VARCHAR(32) NOT NULL,
-    plate_number VARCHAR(9) NOT NULL,
+    id CHAR(36) NOT NULL,
+    plate_number VARCHAR(11) NOT NULL,
     entered_at DATETIME NOT NULL,
     left_at DATETIME,   
     updated_at DATETIME,   
