@@ -29,15 +29,6 @@ public class ParkedVehicleController {
     }
     
     public List<ParkedVehicle> searchByPlateNumber(PlateNumberForm form) throws SQLException {
-        if (form.getPlateNumber().isEmpty()) {
-            return this.all();
-        }
-        System.out.println("------------------------------");
-        System.out.println("Plate number: ");
-        System.out.println(form.getPlateNumber());
-        System.out.println(form.getPlateNumber().length());
-        System.out.println("------------------------------");
-        
         List<ParkedVehicle> parkedVehicles = this.parkedVehicleService.searchByPlateNumber(form.getPlateNumber());
         return parkedVehicles;
     }
