@@ -4,13 +4,13 @@
  */
 package Controllers;
 
+import Forms.ParkedVehicle.PlateNumberForm;
 import Exceptions.NotFound;
 import Exceptions.Validation;
 import Services.ParkedVehicleService;
 import Models.ParkedVehicle;
 import java.sql.SQLException;
 import java.util.List;
-import Requests.ParkedVehicle.*;
 
 /**
  *
@@ -28,40 +28,40 @@ public class ParkedVehicleController {
         return this.parkedVehicleService.all();
     }
     
-    public List<ParkedVehicle> searchByPlateNumber(SearchByPlateNumberRequest request) throws Validation, SQLException {
-        request.validate();
-        List<ParkedVehicle> parkedVehicles = this.parkedVehicleService.searchByPlateNumber(request.getPlateNumber());
+    public List<ParkedVehicle> searchByPlateNumber(PlateNumberForm form) throws SQLException {
+        if (form.getPlateNumber().isEmpty()) {
+            return this.all();
+        }
+        System.out.println("------------------------------");
+        System.out.println("Plate number: ");
+        System.out.println(form.getPlateNumber());
+        System.out.println(form.getPlateNumber().length());
+        System.out.println("------------------------------");
+        
+        List<ParkedVehicle> parkedVehicles = this.parkedVehicleService.searchByPlateNumber(form.getPlateNumber());
         return parkedVehicles;
     }
     
-    public ParkedVehicle enter(EnterRequest request) throws SQLException, Validation {
-        request.validate();
+    public ParkedVehicle enter(PlateNumberForm form) throws SQLException, Validation {
+        form.validate();
 
         ParkedVehicle parkedVehicle = new ParkedVehicle();
-        parkedVehicle.setPlateNumber(request.getPlateNumber());
+        parkedVehicle.setPlateNumber(form.getPlateNumber());
 
         parkedVehicle = this.parkedVehicleService.enter(parkedVehicle);
 
         return parkedVehicle;
     }
     
-    public ParkedVehicle leave(LeaveRequest request) throws SQLException, Validation, NotFound {
-        request.validate();
+    public ParkedVehicle leave(PlateNumberForm form) throws SQLException, Validation, NotFound {
+        form.validate();
 
         ParkedVehicle parkedVehicle = new ParkedVehicle();
-        parkedVehicle.setPlateNumber(request.getPlateNumber());
+        parkedVehicle.setPlateNumber(form.getPlateNumber());
 
         parkedVehicle = this.parkedVehicleService.leave(parkedVehicle);
 
         return parkedVehicle;
-    }
-    
-    public ParkedVehicle updatePlateNumber(UpdatePlateNumberRequest request) throws SQLException, Validation {
-        request.validate();
-
-        // TODO: implements update parked vehicle plate number by id
-
-        return new ParkedVehicle();
     }
 
 }

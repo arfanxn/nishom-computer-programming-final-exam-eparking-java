@@ -5,20 +5,16 @@
 package Components;
 
 import Containers.Controllers;
-import Exceptions.Validation;
 import java.awt.event.ActionEvent;
 import Models.ParkedVehicle;
-import Requests.ParkedVehicle.SearchByPlateNumberRequest;
-import Utilities.UppercaseDocumentFilter;
+import Forms.ParkedVehicle.PlateNumberForm;
 import java.awt.BorderLayout;
 import java.util.List;
 import java.sql.SQLException;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
-import javax.swing.text.AbstractDocument;
 
 /**
  *
@@ -26,6 +22,7 @@ import javax.swing.text.AbstractDocument;
  */
 public final class ParkedVehiclePanel extends JPanel {
 
+    public PlateNumberLabeledTextFieldButtonPanel pnltfbp;
     public ParkedVehicleTable table;
     public JScrollPane scrollPane;
 
@@ -37,31 +34,24 @@ public final class ParkedVehiclePanel extends JPanel {
     private void setupViews() {
         this.setLayout(new BorderLayout());
 
-        EPLabeledTextFieldButtonPanel searchBarLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
-        ((AbstractDocument) searchBarLabeledTFBtnPanel.getTextField().getDocument())
-                .setDocumentFilter(new UppercaseDocumentFilter());
-        searchBarLabeledTFBtnPanel.getButton().setText("Search");
-        searchBarLabeledTFBtnPanel.getButton().addActionListener((ActionEvent event) -> {
+        pnltfbp = new PlateNumberLabeledTextFieldButtonPanel();
+        pnltfbp.getButton().setText("Search");
+        pnltfbp.getButton().addActionListener((ActionEvent event) -> {
             try {
-                SearchByPlateNumberRequest request = new SearchByPlateNumberRequest();
-                request.setPlateNumber(searchBarLabeledTFBtnPanel.getTextField().getText());
+                PlateNumberForm form = new PlateNumberForm();
+                form.setCity(pnltfbp.getCityLabeledTextField().getTextField().getText());
+                form.setNumber(pnltfbp.getNumberLabeledTextField().getTextField().getText());
+                form.setRegion(pnltfbp.getRegionLabeledTextField().getTextField().getText());
 
                 var pvc = Controllers.initParkedVehicle();
-                List<ParkedVehicle> parkedVehicles = pvc.searchByPlateNumber(request);
+                List<ParkedVehicle> parkedVehicles = pvc.searchByPlateNumber(form);
                 table.setRows(parkedVehicles);
-            } catch (Validation e) {
-                System.out.println(e);
-                JOptionPane.showMessageDialog(
-                        null,
-                        e.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
             } catch (SQLException e) {
                 System.out.println(e);
             }
         });
-        searchBarLabeledTFBtnPanel.setVisible(true);
-        this.add(searchBarLabeledTFBtnPanel, BorderLayout.PAGE_START);
+        pnltfbp.setVisible(true);
+        this.add(pnltfbp, BorderLayout.PAGE_START);
 
         this.table = new ParkedVehicleTable();
         this.scrollPane = new JScrollPane(this.table);

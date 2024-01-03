@@ -10,11 +10,9 @@ import javax.swing.JPanel;
 import Containers.Controllers;
 import Controllers.ParkedVehicleController;
 import Models.ParkedVehicle;
-import Requests.ParkedVehicle.EnterRequest;
-import Utilities.UppercaseDocumentFilter;
+import Forms.ParkedVehicle.PlateNumberForm;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
-import javax.swing.text.AbstractDocument;
 
 /**
  *
@@ -22,7 +20,7 @@ import javax.swing.text.AbstractDocument;
  */
 public class EnterVehiclePanel extends JPanel {
 
-    EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel;
+    PlateNumberLabeledTextFieldButtonPanel pnltfbp;
 
     public EnterVehiclePanel() {
         this.setupViews();
@@ -31,18 +29,17 @@ public class EnterVehiclePanel extends JPanel {
     private void setupViews() {
         this.setLayout(new BorderLayout());
 
-        vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
-        vehicleIdLabeledTFBtnPanel.getLabel().setText("Plate Number");
-        ((AbstractDocument) vehicleIdLabeledTFBtnPanel.getTextField().getDocument())
-                .setDocumentFilter(new UppercaseDocumentFilter());
-        vehicleIdLabeledTFBtnPanel.getButton().setText("Submit");
-        vehicleIdLabeledTFBtnPanel.getButton().setOptionPaneYesListener((ActionEvent event) -> {
+        pnltfbp = new PlateNumberLabeledTextFieldButtonPanel();
+        pnltfbp.getButton().setText("Submit");
+        pnltfbp.getButton().setOptionPaneYesListener((ActionEvent event) -> {
             try {
-                EnterRequest request = new EnterRequest();
-                request.setPlateNumber(vehicleIdLabeledTFBtnPanel.getTextField().getText());
+                PlateNumberForm form = new PlateNumberForm();
+                form.setCity(pnltfbp.getCityLabeledTextField().getTextField().getText());
+                form.setNumber(pnltfbp.getNumberLabeledTextField().getTextField().getText());
+                form.setRegion(pnltfbp.getRegionLabeledTextField().getTextField().getText());
 
                 ParkedVehicleController pvc = Controllers.initParkedVehicle();
-                ParkedVehicle parkedVehicle = pvc.enter(request);
+                ParkedVehicle parkedVehicle = pvc.enter(form);
 
                 JOptionPane.showMessageDialog(
                         null,
@@ -50,7 +47,7 @@ public class EnterVehiclePanel extends JPanel {
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
 
-                this.vehicleIdLabeledTFBtnPanel.getTextField().setText(""); // resets the text
+                this.pnltfbp.resetTextFieldTexts(); // resets the text
             } catch (SQLException e) {
                 System.out.println(e);
             } catch (Exceptions.Validation e) {
@@ -62,8 +59,8 @@ public class EnterVehiclePanel extends JPanel {
                         JOptionPane.ERROR_MESSAGE);
             }
         });
-        vehicleIdLabeledTFBtnPanel.setVisible(true);
-        this.add(vehicleIdLabeledTFBtnPanel, BorderLayout.NORTH);
+        pnltfbp.setVisible(true);
+        this.add(pnltfbp, BorderLayout.NORTH);
     }
 
 }

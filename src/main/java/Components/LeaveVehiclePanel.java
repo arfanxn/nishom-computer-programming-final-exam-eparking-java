@@ -9,14 +9,12 @@ import Controllers.ParkedVehicleController;
 import Exceptions.NotFound;
 import Exceptions.Validation;
 import Models.ParkedVehicle;
-import Requests.ParkedVehicle.LeaveRequest;
-import Utilities.UppercaseDocumentFilter;
+import Forms.ParkedVehicle.PlateNumberForm;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.text.AbstractDocument;
 
 /**
  *
@@ -24,7 +22,7 @@ import javax.swing.text.AbstractDocument;
  */
 public class LeaveVehiclePanel extends JPanel {
 
-    EPLabeledTextFieldButtonPanel vehicleIdLabeledTFBtnPanel;
+    PlateNumberLabeledTextFieldButtonPanel pnltfbp;
 
     public LeaveVehiclePanel() {
         this.setupViews();
@@ -33,18 +31,17 @@ public class LeaveVehiclePanel extends JPanel {
     private void setupViews() {
         this.setLayout(new BorderLayout());
 
-        this.vehicleIdLabeledTFBtnPanel = new EPLabeledTextFieldButtonPanel();
-        vehicleIdLabeledTFBtnPanel.getLabel().setText("Vehicle Number Plate");
-        ((AbstractDocument) vehicleIdLabeledTFBtnPanel.getTextField().getDocument())
-                .setDocumentFilter(new UppercaseDocumentFilter());
-        vehicleIdLabeledTFBtnPanel.getButton().setText("Submit");
-        vehicleIdLabeledTFBtnPanel.getButton().setOptionPaneYesListener((ActionEvent event) -> {
+        this.pnltfbp = new PlateNumberLabeledTextFieldButtonPanel();
+        pnltfbp.getButton().setText("Submit");
+        pnltfbp.getButton().setOptionPaneYesListener((ActionEvent event) -> {
             try {
-                LeaveRequest request = new LeaveRequest();
-                request.setPlateNumber(vehicleIdLabeledTFBtnPanel.getTextField().getText());
+                PlateNumberForm form = new PlateNumberForm();
+                form.setCity(pnltfbp.getCityLabeledTextField().getTextField().getText());
+                form.setNumber(pnltfbp.getNumberLabeledTextField().getTextField().getText());
+                form.setRegion(pnltfbp.getRegionLabeledTextField().getTextField().getText());
 
                 ParkedVehicleController pvc = Controllers.initParkedVehicle();
-                ParkedVehicle parkedVehicle = pvc.leave(request);
+                ParkedVehicle parkedVehicle = pvc.leave(form);
 
                 JOptionPane.showMessageDialog(
                         null,
@@ -53,7 +50,7 @@ public class LeaveVehiclePanel extends JPanel {
                         JOptionPane.INFORMATION_MESSAGE
                 );
 
-                this.vehicleIdLabeledTFBtnPanel.getTextField().setText(""); // resets the text
+                this.pnltfbp.resetTextFieldTexts();
             } catch (Validation | NotFound e) {
                 System.out.println(e);
                 JOptionPane.showMessageDialog(
@@ -65,7 +62,7 @@ public class LeaveVehiclePanel extends JPanel {
                 System.out.println(e);
             }
         });
-        vehicleIdLabeledTFBtnPanel.setVisible(true);
-        this.add(vehicleIdLabeledTFBtnPanel, BorderLayout.NORTH);
+        pnltfbp.setVisible(true);
+        this.add(pnltfbp, BorderLayout.NORTH);
     }
 }
