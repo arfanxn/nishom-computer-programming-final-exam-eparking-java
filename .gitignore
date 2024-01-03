@@ -1,5 +1,6 @@
 .idea/
 target/*
+.zshrc.save
 .env
 pom.xml.tag 
 pom.xml.releaseBackup
